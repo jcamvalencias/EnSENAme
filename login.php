@@ -26,6 +26,7 @@
 <!-- [Template CSS Files] -->
 <link rel="stylesheet" href="admin/assets/css/style.css" id="main-style-link" >
 <link rel="stylesheet" href="admin/assets/css/style-preset.css" >
+<link rel="stylesheet" href="admin/assets/image" >
 </head>
 <!-- [Head] end -->
 <!-- [Body] Start -->
@@ -42,9 +43,9 @@
   <div class="auth-main">    
     <div class="auth-wrapper v3">
       <div class="auth-form">
-        <div class="auth-header">
-          <a href="index.php"><img src="admin/assets/images/" alt="img"></a>
-        </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white px-4">
+          <a href="index.php"><img src="admin/assets/images/logoensenamenobg.png" alt="img"></a>
+        </nav>
         <div class="card my-5">
           <div class="card-body"><form method="post" action="admin/dashboard/index.php">
             <div class="d-flex justify-content-between align-items-end mb-4">
@@ -53,11 +54,11 @@
             </div>
             <div class="form-group mb-3">
               <label class="form-label">Numero de Usuario</label>
-              <input type="text" name="txt" class="form-control" placeholder="Ingrese el numero de Usuario">
+              <input type="text" name="txt" class="form-control" placeholder="Ingrese el numero de Usuario" required>
             </div>
             <div class="form-group mb-3">
               <label class="form-label">Contraseña</label>
-              <input type="password" name="txtpass" placeholder="Ingrese la clave" class="form-control">
+              <input type="password" name="txtpass" placeholder="Ingrese la clave" class="form-control" Required>
             </div>
             <div class="d-flex mt-1 justify-content-between">
               <div class="form-check">
@@ -113,3 +114,20 @@
 <!-- [Body] end -->
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+<style>
+  .navbar {
+  width: 100%;
+  border-bottom: 1px solid #eee; /* línea sutil abajo */
+}
+</style>
