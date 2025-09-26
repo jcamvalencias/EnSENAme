@@ -1,3 +1,28 @@
+<?php
+session_start();
+include "conexion.php"; // Archivo con la conexión $conexion
+
+if(isset($_POST['btningresar'])){
+
+    $numeroDocumento = $_POST['txtdoc'];   
+    $clave = $_POST['txtpass'];            
+    $pass = md5($clave);                   
+
+    // Consulta para verificar usuario y contraseña
+    $query = "SELECT * FROM tb_usuarios WHERE ID = '$numeroDocumento' AND Clave = '$pass'";
+    $result = mysqli_query($conexion, $query);
+
+    if(mysqli_num_rows($result) > 0){
+        $_SESSION['txtdoc'] = $numeroDocumento; // Guardar sesión
+        // Redirigir al dashboard
+        echo "<script>window.location='admin/dashboard/index.php';</script>";
+        exit();
+    } else {
+        $message = "Usuario o contraseña incorrectos"; 
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <!-- [Head] start -->
@@ -31,7 +56,7 @@
 <!-- [Head] end -->
 <!-- [Body] Start -->
 
-<body>
+<body>  
   <!-- [ Pre-loader ] start -->
   <div class="loader-bg">
     <div class="loader-track">
@@ -47,14 +72,14 @@
           <a href="index.php"><img src="admin/assets/images/logoensenamenobg.png" alt="img"></a>
         </nav>
         <div class="card my-5">
-          <div class="card-body"><form method="post" action="admin/dashboard/index.php">
+          <div class="card-body"><form method="post" action="">
             <div class="d-flex justify-content-between align-items-end mb-4">
               <h3 class="mb-0"><b>Iniciar Sesión</b></h3>
               <a href="register.php" class="link-primary">No tienes Cuenta?</a>
             </div>
             <div class="form-group mb-3">
-              <label class="form-label">Numero de Usuario</label>
-              <input type="text" name="txt" class="form-control" placeholder="Ingrese el numero de Usuario" required>
+              <label class="form-label">Documento de Usuario</label>
+              <input type="text" name="txtdoc" class="form-control" placeholder="Ingrese el documento de Usuario" required>
             </div>
             <div class="form-group mb-3">
               <label class="form-label">Contraseña</label>
