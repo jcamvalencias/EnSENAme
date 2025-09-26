@@ -57,26 +57,38 @@
     </a>
   </li>     
   
-  <li class="pc-item">
-    <a href="http://localhost/ense%C3%B1ame/admin/dashboard/usuarios.php" class="pc-link">
-      <span class="pc-micon"><i class="ti ti-users"></i></span>
-      <span class="pc-mtext">Usuarios</span>
-    </a>
-  </li>
+<li class="pc-item pc-hasmenu">
+  <a href="javascript:void(0);" class="pc-link">
+    <span class="pc-micon"><i class="ti ti-users"></i></span>
+    <span class="pc-mtext">Usuarios</span>
+    <span class="pc-arrow"><i class="ti ti-chevron-down"></i></span>
+  </a>
+  <ul class="pc-submenu">
+    <li class="pc-item">
+      <a href="crear.php" class="pc-link">
+        <span class="pc-mtext">Agregar usuario</span>
+      </a>
+    </li>
+    <li class="pc-item">
+      <a href="usuarios.php" class="pc-link">
+        <span class="pc-mtext">Ver Usuarios</span>
+      </a>
+    </li>
+  </ul>
+</li>
 
   <li class="pc-item">
-      <a href="../application/user-list.html" class="pc-link">
-        <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
-        <span class="pc-mtext">Producto</span>
+      <a href="producto.html" class="pc-link">
+        <span class="pc-micon"><i class="ti ti-book"></i></span>
+        <span class="pc-mtext">Guias</span>
       </a>
   </li>
   <li class="pc-item">
           <a href="servicio.php" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-brand-chrome"></i></span>
-            <span class="pc-mtext">Servicio</span>
+            <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
+            <span class="pc-mtext">Chats</span>
           </a>
         </li>
-</ul>
 
     </div>
     
@@ -181,17 +193,17 @@
         </ul>
         <div class="tab-content" id="mysrpTabContent">
           <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1" tabindex="0">
-            <a href="#!" class="dropdown-item">
+            <a href="editarperfil.php" class="dropdown-item">
               <i class="ti ti-edit-circle"></i>
-              <span>Edit Profile</span>
+              <span>Editar Perfil</span>
             </a>
             <a href="#!" class="dropdown-item">
               <i class="ti ti-user"></i>
-              <span>View Profile</span>
+              <span>Ver Perfil</span>
             </a>
             <a href="#!" class="dropdown-item">
               <i class="ti ti-power"></i>
-              <span>Logout</span>
+              <span>Salir</span>
             </a>
           </div>
           <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
@@ -322,10 +334,12 @@
                 </div>
                 <section class="page-section" id="services">
             <div class="container">
+              <br>
                 <div class="text-center">
                       <h2 class="h3 mb-1 text-gray-800">Justificación</h2>
                       <h4 class="section-subheading text-muted">¿Por qué es importante desarrollar nuestra app?</h3>
                 </div>
+                <br>
                 <h5><small>En la actualidad, la comunicación efectiva sigue siendo uno de los principales desafíos para las personas con discapacidades auditivas, especialmente aquellas que utilizan el lenguaje de señas como su principal medio de expresión. Esta forma de comunicación, aunque rica y compleja, no es comprendida por la mayoría de la población oyente, lo que genera una barrera significativa para la inclusión social, educativa y laboral de las personas sordas.
                     <br>
 <br>
@@ -346,15 +360,15 @@ En el entorno laboral, contribuiría a una mayor integración de personas sordas
                                       <h6 class="m-0 font-weight-bold text-primary">% de Progreso de los avances</h6>
                                   </div>
                                   <div class="card-body">
-                                      <div class="mb-1 small">IA traductora</div>
+                                      <div class="mb-1 small">IA traductora <h4>25%</h4></div>
                                       <div class="progress mb-4">
                                           <div class="progress-bar" role="progressbar" style="width: 25%"
                                               aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                                       </div>
-                                      <div class="mb-1 small">Desarrollo de la app</div>
+                                      <div class="mb-1 small">Desarrollo general <h4>42%</h4></div>
                                       <div class="progress progress-sm mb-2">
-                                          <div class="progress-bar" role="progressbar" style="width: 40%"
-                                              aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                          <div class="progress-bar" role="progressbar" style="width: 42%"
+                                              aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
                                       </div>
                                   </div>
                               </div>

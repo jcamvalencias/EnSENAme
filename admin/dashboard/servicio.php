@@ -57,23 +57,36 @@
     </a>
   </li>     
   
-  <li class="pc-item">
-    <a href="http://localhost/ense%C3%B1ame/admin/dashboard/usuarios.php" class="pc-link">
-      <span class="pc-micon"><i class="ti ti-users"></i></span>
-      <span class="pc-mtext">Usuarios</span>
-    </a>
-  </li>
+<li class="pc-item pc-hasmenu">
+  <a href="javascript:void(0);" class="pc-link">
+    <span class="pc-micon"><i class="ti ti-users"></i></span>
+    <span class="pc-mtext">Usuarios</span>
+    <span class="pc-arrow"><i class="ti ti-chevron-down"></i></span>
+  </a>
+  <ul class="pc-submenu">
+    <li class="pc-item">
+      <a href="crear.php" class="pc-link">
+        <span class="pc-mtext">Agregar usuario</span>
+      </a>
+    </li>
+    <li class="pc-item">
+      <a href="usuarios.php" class="pc-link">
+        <span class="pc-mtext">Ver Usuarios</span>
+      </a>
+    </li>
+  </ul>
+</li>
 
-  <li class="pc-item">
-      <a href="../application/user-list.html" class="pc-link">
-        <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
-        <span class="pc-mtext">Producto</span>
+ <li class="pc-item">
+      <a href="producto.html" class="pc-link">
+        <span class="pc-micon"><i class="ti ti-book"></i></span>
+        <span class="pc-mtext">Guias</span>
       </a>
   </li>
   <li class="pc-item">
-          <a href="../application/servicio.php" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-brand-chrome"></i></span>
-            <span class="pc-mtext">Servicio</span>
+          <a href="servicio.php" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
+            <span class="pc-mtext">Chats</span>
           </a>
         </li>
 </ul>
@@ -227,7 +240,7 @@
             <div class="col-md-12">
               <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="../dashboard/index.php">Home</a></li>
-                <li class="breadcrumb-item" aria-current="page">Servicio</li>
+                <li class="breadcrumb-item" aria-current="page">Chat</li>
               </ul>
             </div>
             <div class="col-md-12">
