@@ -197,10 +197,10 @@
             <div class="pct-content">
               <div class="theme-color themepreset-color theme-layout">
                 <a href="#!" class="active" onclick="layout_change('light')" data-value="false"
-                  ><span><img src="../assets/images/customization/default.svg" alt="img"></span><span>Light</span></a
+                  ><span><img src="admin/assets/images/customization/default.svg" alt="img"></span><span>Light</span></a
                 >
                 <a href="#!" class="" onclick="layout_change('dark')" data-value="true"
-                  ><span><img src="../assets/images/customization/dark.svg" alt="img"></span><span>Dark</span></a
+                  ><span><img src="admin/assets/images/customization/dark.svg" alt="img"></span><span>Dark</span></a
                 >
               </div>
             </div>
@@ -225,31 +225,31 @@
             <div class="pct-content">
               <div class="theme-color preset-color">
                 <a href="#!" class="active" data-value="preset-1"
-                  ><span><img src="../assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 1</span></a
+                  ><span><img src="admin/assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 1</span></a
                 >
                 <a href="#!" class="" data-value="preset-2"
-                  ><span><img src="../assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 2</span></a
+                  ><span><img src="admin/assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 2</span></a
                 >
                 <a href="#!" class="" data-value="preset-3"
-                  ><span><img src="../assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 3</span></a
+                  ><span><img src="admin/assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 3</span></a
                 >
                 <a href="#!" class="" data-value="preset-4"
-                  ><span><img src="../assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 4</span></a
+                  ><span><img src="admin/assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 4</span></a
                 >
                 <a href="#!" class="" data-value="preset-5"
-                  ><span><img src="../assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 5</span></a
+                  ><span><img src="admin/assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 5</span></a
                 >
                 <a href="#!" class="" data-value="preset-6"
-                  ><span><img src="../assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 6</span></a
+                  ><span><img src="admin/assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 6</span></a
                 >
                 <a href="#!" class="" data-value="preset-7"
-                  ><span><img src="../assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 7</span></a
+                  ><span><img src="admin/assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 7</span></a
                 >
                 <a href="#!" class="" data-value="preset-8"
-                  ><span><img src="../assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 8</span></a
+                  ><span><img src="admin/assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 8</span></a
                 >
                 <a href="#!" class="" data-value="preset-9"
-                  ><span><img src="../assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 9</span></a
+                  ><span><img src="admin/assets/images/customization/theme-color.svg" alt="img"></span><span>Theme 9</span></a
                 >
               </div>
             </div>
