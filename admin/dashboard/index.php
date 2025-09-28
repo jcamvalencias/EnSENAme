@@ -158,6 +158,8 @@
             </div>
             <div class="flex-grow-1 ms-3">
               <h6 class="mb-1">Camilo</h6>
+
+              
               <?php
               $host = '127.0.0.1';
               $kaboom   = 'kaboom';
@@ -243,7 +245,7 @@
               </form>
             
           <?php
-// header.php
+// 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
