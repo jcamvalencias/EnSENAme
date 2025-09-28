@@ -172,7 +172,9 @@
             </div>
             <div class="flex-grow-1 ms-3">
 
-              <h6 class="mb-1">Camilo</h6>
+
+
+              <h6 class="mb-1">User</h6>
 
               
               <?php
@@ -249,6 +251,7 @@
               exit;
               ?> 
               <span>Admin</span>
+
             </div>
             <!-- login_form.php -->
               <form action="authenticate.php" method="post">
