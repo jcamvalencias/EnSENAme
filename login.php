@@ -8,18 +8,28 @@ if(isset($_POST['btningresar'])){
     $clave = $_POST['txtpass'];            
     $pass = md5($clave);                   
 
-    // Consulta para verificar usuario y contraseña
-    $query = "SELECT * FROM tb_usuarios WHERE ID = '$numeroDocumento' AND Clave = '$pass'";
-    $result = mysqli_query($conexion, $query);
+  // Consulta para verificar usuario y contraseña y obtener todos los datos
+  $query = "SELECT * FROM tb_usuarios WHERE ID = '$numeroDocumento' AND Clave = '$pass'";
+  $result = mysqli_query($conexion, $query);
 
-    if(mysqli_num_rows($result) > 0){
-        $_SESSION['txtdoc'] = $numeroDocumento; // Guardar sesión
-        // Redirigir al dashboard
-        echo "<script>window.location='admin/dashboard/index.php';</script>";
-        exit();
+  if(mysqli_num_rows($result) > 0){
+    $row = mysqli_fetch_assoc($result);
+    $_SESSION['txtdoc'] = $numeroDocumento; // Guardar sesión
+    // Guardar datos del usuario en la sesión
+    $_SESSION['primer_nombre'] = $row['p_nombre'];
+    $_SESSION['segundo_nombre'] = $row['s_nombre'];
+    $_SESSION['primer_apellido'] = $row['p_apellido'];
+    $_SESSION['segundo_apellido'] = $row['s_apellido'];
+    $_SESSION['id_rol'] = $row['id_rol'];
+    // Redirigir según el rol
+    if($row['id_rol'] == 1){
+      echo "<script>window.location='admin/dashboard/index.php';</script>";
     } else {
-        $message = "Documento o contraseña incorrectos"; 
-    }
+      echo "<script>window.location='user/index.php';</script>";
+    exit();
+  } else {
+    $message = "Usuario o contraseña incorrectos"; 
+  }
 }
 ?>
 
@@ -68,7 +78,7 @@ if(isset($_POST['btningresar'])){
   <div class="auth-main">    
     <div class="auth-wrapper v3">
       <div class="auth-form">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white px-4">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 shadow">
           <a href="index.php"><img src="admin/assets/images/logoensenamenobg.png" alt="img"></a>
         </nav>
         <div class="card my-5">

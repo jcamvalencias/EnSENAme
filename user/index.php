@@ -1,3 +1,17 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
+include '../conexion.php';
+$nombre = '';
+if (!empty($_SESSION['txtdoc'])) {
+  $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
+  $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
+  if ($row = mysqli_fetch_assoc($res)) {
+    $nombre = $row['p_nombre'];
+  }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <!-- [Head] start -->
@@ -12,32 +26,20 @@
   <meta name="keywords" content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
   <meta name="author" content="CodedThemes">
 
-  <?php
-  session_start();
-  include '../../conexion.php';
-  $nombre = '';
-  if (!empty($_SESSION['txtdoc'])) {
-    $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
-    $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
-    if ($row = mysqli_fetch_assoc($res)) {
-      $nombre = $row['p_nombre'];
-    }
-  }
-  ?>
   <!-- [Favicon] icon -->
-  <link rel="icon" href="../assets/images/favisena.png" type="image/x-icon"> <!-- [Google Font] Family -->
+  <link rel="icon" href="../admin/assets/images/favisena.png" type="image/x-icon"> <!-- [Google Font] Family -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
 <!-- [Tabler Icons] https://tablericons.com -->
-<link rel="stylesheet" href="../assets/fonts/tabler-icons.min.css" >
+<link rel="stylesheet" href="../admin/assets/fonts/tabler-icons.min.css" >
 <!-- [Feather Icons] https://feathericons.com -->
-<link rel="stylesheet" href="../assets/fonts/feather.css" >
+<link rel="stylesheet" href="../admin/assets/fonts/feather.css" >
 <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
-<link rel="stylesheet" href="../assets/fonts/fontawesome.css" >
+<link rel="stylesheet" href="../admin/assets/fonts/fontawesome.css" >
 <!-- [Material Icons] https://fonts.google.com/icons -->
-<link rel="stylesheet" href="../assets/fonts/material.css" >
+<link rel="stylesheet" href="../admin/assets/fonts/material.css" >
 <!-- [Template CSS Files] -->
-<link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" >
-<link rel="stylesheet" href="../assets/css/style-preset.css" >
+<link rel="stylesheet" href="../admin/assets/css/style.css" id="main-style-link" >
+<link rel="stylesheet" href="../admin/assets/css/style-preset.css" >
 
 </head>
 <!-- [Head] end -->
@@ -57,39 +59,19 @@
     <div class="m-header">
       <a href="../dashboard/index.php" class="b-brand text-primary">
         <!-- ========   Change your logo from here   ============ -->
-        <img src="../assets/images/logoensename.png" class="img-fluid" alt="">
+        <img src="../admin/assets/images/logoensename.png" class="img-fluid" alt="">
       </a>
     </div>
     <div class="navbar-content">
     <ul class="pc-navbar">
   <li class="pc-item">
-    <a href="../dashboard/index.php" class="pc-link">
+    <a href="index.php" class="pc-link">
       <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
       <span class="pc-mtext">Inicio</span>
     </a>
-  </li>     
+  </li>  
   
-<li class="pc-item pc-hasmenu">
-  <a href="javascript:void(0);" class="pc-link">
-    <span class="pc-micon"><i class="ti ti-users"></i></span>
-    <span class="pc-mtext">Usuarios</span>
-    <span class="pc-arrow"><i class="ti ti-chevron-down"></i></span>
-  </a>
-  <ul class="pc-submenu">
-    <li class="pc-item">
-      <a href="crear.php" class="pc-link">
-        <span class="pc-mtext">Agregar usuario</span>
-      </a>
-    </li>
-    <li class="pc-item">
-      <a href="usuarios.php" class="pc-link">
-        <span class="pc-mtext">Ver Usuarios</span>
-      </a>
-    </li>
-  </ul>
-</li>
-
-  <li class="pc-item">
+<li class="pc-item">
   <a href="producto.php" class="pc-link">
         <span class="pc-micon"><i class="ti ti-book"></i></span>
         <span class="pc-mtext">Guias</span>
@@ -162,7 +144,6 @@
         <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
 
   <span><?php echo htmlspecialchars($_SESSION['primer_nombre']); ?></span>
-
       </a>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
@@ -171,155 +152,10 @@
               <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
             </div>
             <div class="flex-grow-1 ms-3">
-
-              <h6 class="mb-1">Camilo</h6>
-
-              
-              <?php
-              $host = '127.0.0.1';
-              $kaboom   = 'kaboom';
-              $p_nombre = 'p_nombre';
-              $Clave = 'Clave';
-              $charset = 'utf8mb4_spanish_ci';
-
-              $dsn = "mysql:host=$host;kaboom.sql=$kaboom;charset=$charset";
-              $options = [
-                  PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                  PDO::ATTR_EMULATE_PREPARES   => false,
-              ];
-
-              try {
-                  $pdo = new PDO($dsn, $p_nombre, $Clave, $options);
-              } catch (\PDOException $e) {
-                  // En producción no mostrar detalles del error
-                  throw new \PDOException($e->getMessage(), (int)$e->getCode());
-              }
-              
-              // authenticate.php
-              session_start();
-              require_once 'kaboom.php';
-
-              if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                  header('Location: index.php');
-                  exit;
-              }
-
-              $p_nombre = trim($_POST['username'] ?? '');
-              $Clave = $_POST['password'] ?? '';
-
-              // Validación simple
-              if ($p_nombre === '' || $Clave === '') {
-                  $_SESSION['login_error'] = 'Credenciales inválidas.';
-                  header('Location: index.php');
-                  exit;
-              }
-
-              $stmt = $pdo->prepare('SELECT ID, p_nombre, Clave_hash FROM users WHERE p_nombre = :p_nombre LIMIT 1');
-              $stmt->execute(['p_nombre' => $p_nombre]);
-              $user = $stmt->fetch();
-
-              if ($user && password_verify($password, $user['password_hash'])) {
-                  // Login exitoso: regenerar id de sesión y almacenar datos necesarios
-                  session_regenerate_id(true);
-                  $_SESSION['user'] = [
-                      'ID' => $user['ID'],
-                      'p_nombre' => $user['p_nombre']
-                  ];
-                  // redirigir a la página principal o dashboard
-                  header('Location: index.php');
-                  exit;
-              } else {
-                  $_SESSION['login_error'] = 'Usuario o contraseña incorrectos.';
-                  header('Location: index.php');
-                  exit;
-              }
-              //Cerrar sesion 
-              session_start();
-              $_SESSION = [];
-              if (ini_get('session.use_cookies')) {
-                  $params = session_get_cookie_params();
-                  setcookie(session_name(), '', time() - 42000,
-                      $params['path'], $params['domain'],
-                      $params['secure'], $params['httponly']
-                  );
-              }
-              session_destroy();
-              header('Location: index.php');
-              exit;
-              ?> 
-              <span>Admin</span>
+              <h6 class="mb-1"><?php echo htmlspecialchars($nombre); ?></h6>
+              <span><?php echo htmlspecialchars($nombre); ?></span>
             </div>
-            <!-- login_form.php -->
-              <form action="authenticate.php" method="post">
-                <label for="username">Usuario</label>
-                <input type="text" id="username" name="username" required>
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required>
-                <button type="submit">Ingresar</button>
-              </form>
             
-          <?php
-// 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-?>
-
-<style>
-/* CSS mínimo para ubicar el nombre de usuario en la esquina superior derecha */
-.topbar {
-  display:flex;
-  justify-content:flex-end;
-  align-items:center;
-  padding:10px 20px;
-  background:#fff;
-  border-bottom:1px solid #eee;
-}
-.user-badge {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-family:Arial, sans-serif;
-  color:#222;
-}
-.user-badge .avatar {
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  background:#0a84ff;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-}
-.user-badge a { text-decoration:none; color:#0a84ff; margin-left:8px; font-size:0.9rem; }
-</style>
-</head>
-<body>
-  <div class="topbar">
-    <?php if (!empty($_SESSION['user'])): 
-        // Escapar para evitar XSS
-        $username_safe = htmlspecialchars($_SESSION['user']['username'], ENT_QUOTES, 'UTF-8');
-        // Generar iniciales para avatar (opcional)
-        $initial = strtoupper(substr($username_safe, 0, 1));
-    ?>
-      <div class="user-badge" title="Sesión iniciada">
-        <div class="avatar"><?php echo $initial; ?></div>
-        <div>
-          <div style="font-weight:600;"><?php echo $username_safe; ?></div>
-          <div style="font-size:0.8rem;"><a href="logout.php">Cerrar sesión</a></div>
-        </div>
-      </div>
-    <?php else: ?>
-      <div>
-        <a href="login_form.php">Iniciar sesión</a>
-      </div>
-    <?php endif; ?>
-  </div>
-
-    
           </div>
         </div>
         <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
@@ -406,10 +242,8 @@ if (session_status() === PHP_SESSION_NONE) {
   
       <!-- [ breadcrumb ] end -->
       <!-- [ Main Content ] start -->  
-      <h1>Bienvenido al Sistema</h1>
-      <a href="index.php">Inicio</a>|<a href="Usuarios.php"> Usuario</a> |
-      <a href="producto.html">Guias</a> | <a href="servicio.php">Chats</a>   
-      <br><br>
+        <h1>Bienvenido al Sistema</h1>  
+        <br><br>
 <!-- Carrusel -->
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
   <ol class="carousel-indicators">
@@ -419,20 +253,20 @@ if (session_status() === PHP_SESSION_NONE) {
   </ol>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="../assets/images/car1.png" style="width:800px; height:400px; object-fit:cover;" class="d-block w-100" alt="Primer slide">
+      <img src="../admin/assets/images/car1.png" style="width:800px; height:400px; object-fit:cover;" class="d-block w-100" alt="Primer slide">
       <div class="carousel-caption d-none d-md-block">
         <p>Un ejemplo de una IA de reconocimiento por parte de ultralytics.</p>
       </div>
     </div>
     <div class="carousel-item">
-      <img src="../assets/images/logoensename.PNG" style="width:800px; height:400px; object-fit:cover;" class="d-block w-100" alt="Segundo slide">
+      <img src="../admin/assets/images/logoensename.PNG" style="width:800px; height:400px; object-fit:cover;" class="d-block w-100" alt="Segundo slide">
       <div class="carousel-caption d-none d-md-block">
         <h5>Logo del proyecto</h5>
         <p>EnSEÑAme.</p>
       </div>
     </div>
     <div class="carousel-item">
-      <img src="../assets/images/car2.png" style="width:800px; height:400px; object-fit:cover;" class="d-block w-100" alt="Tercer slide">
+      <img src="../admin/assets/images/car2.png" style="width:800px; height:400px; object-fit:cover;" class="d-block w-100" alt="Tercer slide">
       <div class="carousel-caption d-none d-md-block">
         <p>Muestra el impacto social de EnSEÑAme en derribar barreras comunicativas..</p>
       </div>
@@ -615,7 +449,7 @@ En el entorno laboral, contribuiría a una mayor integración de personas sordas
   <!-- Required Js -->
   <script src="../assets/js/plugins/popper.min.js"></script>
   <script src="../assets/js/plugins/simplebar.min.js"></script>
-  <script src="../assets/js/plugins/bootstrap.min.js"></script>
+  <script src="../admin/assets/js/plugins/bootstrap.min.js"></script>
   <script src="../assets/js/fonts/custom-font.js"></script>
   <script src="../assets/js/pcoded.js"></script>
   <script src="../assets/js/plugins/feather.min.js"></script>
