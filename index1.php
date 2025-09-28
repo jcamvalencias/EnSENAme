@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Mantis HTML Admin Template | Mantis Bootstrap 5 Admin Template</title>
+  <title>EnSEÑAme</title>
   <!-- [Meta] -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -49,7 +49,7 @@
     <nav class="navbar navbar-expand-md navbar-dark top-nav-collapse default">
       <div class="container">
         <a class="navbar-brand" href="#">
-          <img src="../assets/images/logo-white.svg" alt="logo">
+          <img src="admin/assets/images/logoensenamenobg.png" alt="logo">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
           aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,32 +64,31 @@
               <a class="nav-link" href="../elements/bc_alert.html">Components</a>
             </li>
             <li class="nav-item pe-1">
-              <a class="nav-link me-2" href="https://codedthemes.gitbook.io/mantis-bootstrap/" target="_blank">Documentation</a>
+              <a class="nav-link me-2" href="login.php" target="_blank">Iniciar sesion</a>
             </li>
             <li class="nav-item">
-              <a class="btn btn-primary" target="_blank" href="https://codedthemes.com/item/mantis-bootstrap-admin-dashboard/">Purchase Now</a>
+              <a class="btn btn-primary" target="_blank" href="register.php">Registrate</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
     <!-- [ Nav ] start -->
-    <img src="../assets/images/landing/bg-mockup-theme-1.png" alt="img" class="img-fluid img-home-mokeup img-landing"
-      data-img="../assets/images/landing/bg-mockup-theme-" data-img-type=".png">
+    <img src="admin/assets/images/inicioindex1.png" alt="" class=""
+      data-img="admin/assets/images/inicioindex1.png" data-img-type=".png">
     <div class="container">
       <div class="row align-items-center justify-content-between">
         <div class="col-md-6 col-xl-4">
-          <h1 class="mt-sm-3 text-white mb-4 f-w-600 wow fadeInUp" data-wow-delay="0.2s">Carefully Crafted for your
-            <span class="text-primary">Caring React</span> Project
+          <h1 class="mt-sm-3 text-white mb-4 f-w-600 wow fadeInUp" data-wow-delay="0.2s">¿Quienes somos?
+            <span class="text-primary"></span>
           </h1>
-          <h5 class="mb-4 text-white opacity-75 wow fadeInUp" data-wow-delay="0.4s"> Mantis React is a blazing-fast
-            dashboard template built using the MUI React library.</h5>
+          <h5 class="mb-4 text-white opacity-75 wow fadeInUp" data-wow-delay="0.4s"> Somos un equipo multidisciplinario que, junto con la comunidad sorda, desarrolla una app que traduce en tiempo real el lenguaje de señas colombiano (LSC) a texto y voz. 
+            Con inteligencia artificial y visión por computadora buscamos derribar barreras comunicativas y fomentar la inclusión en Colombia.</h5>
           <div class="my-5 wow fadeInUp" data-wow-delay="0.6s">
-            <a href="../elements/bc_alert.html" class="btn btn-outline-primary me-2" target="_blank">Explore Components</a>
-            <a href="../dashboard/index.html" class="btn btn-primary d-inline-flex align-items-center" target="_blank"> <i
-                class="ti ti-eye me-1"></i> Live Preview</a>
+            
+          
           </div>
-          <img src="../assets/images/landing/img-headertech.svg" alt="img" class="img-fluid wow fadeInUp"
+          <img src="" alt="" class=""
             data-wow-delay="0.8s">
         </div>
         <div class="col-lg-7">
@@ -103,10 +102,10 @@
     <div class="container title">
       <div class="row justify-content-center text-center wow fadeInUp" data-wow-delay="0.2s">
         <div class="col-md-10 col-xl-6">
-          <h5 class="text-primary mb-0">Mantis nailed it!</h5>
-          <h2 class="my-3">Why Mantis?</h2>
-          <p class="mb-0">Customize everything with the MantisAdmin Dashboard Template built with latest Bootstrap v5
-            component library</p>
+          <h5 class="text-primary mb-0"></h5>
+          <h2 class="my-3">Enfoques</h2>
+          <p class="mb-0">Lo que queremos lograr y hemos logrado</p>
+          <br>
         </div>
       </div>
     </div>
@@ -115,28 +114,30 @@
         <div class="col-sm-6 col-lg-4">
           <div class="card wow fadeInUp" data-wow-delay="0.4s">
             <div class="card-body">
-              <img src="../assets/images/landing/img-feature1.svg" alt="img" class="img-fluid">
-              <h5 class="my-3">Professional Design</h5>
-              <p class="mb-0 text-muted">Mantis has fully professional grade user interface for any kind of backend
-                project.</p>
+              <img src="admin/assets/images/enf1.png" alt="img" class="img-fluid">
+              <h5 class="my-3">Enfoque explicativo</h5>
+              <p class="mb-0 text-muted">La app captura las señas del usuario con la cámara, analiza movimientos y expresiones mediante visión por computadora, 
+                las interpreta con inteligencia artificial entrenada en LSC y genera en tiempo real el texto equivalente en pantalla para facilitar la comunicación.</p>
             </div>
           </div>
         </div>
         <div class="col-sm-6 col-lg-4">
           <div class="card wow fadeInUp" data-wow-delay="0.6s">
             <div class="card-body">
-              <img src="../assets/images/landing/img-feature2.svg" alt="img" class="img-fluid">
-              <h5 class="my-3">Flexible Solution</h5>
-              <p class="mb-0 text-muted">Highly flexible to work around using Mantis React Template.</p>
+              <img src="admin/assets/images/enf2.jpg" alt="img" class="img-fluid">
+              <h5 class="my-3">Enfoque objetivos</h5>
+              <p class="mb-0 text-muted">El proyecto busca desarrollar una app accesible que traduzca en tiempo real el lenguaje de señas colombiano a texto, entrenada con IA precisa y validada con la comunidad sorda. 
+                Su meta es funcionar en entornos reales, facilitar la comunicación sin intérprete y promover conciencia social sobre la diversidad lingüística.</p>
             </div>
           </div>
         </div>
         <div class="col-sm-6 col-lg-4">
           <div class="card wow fadeInUp" data-wow-delay="0.8s">
             <div class="card-body">
-              <img src="../assets/images/landing/img-feature3.svg" alt="img" class="img-fluid">
-              <h5 class="my-3">Effective Documentation</h5>
-              <p class="mb-0 text-muted">Need help? Check out the detailed Documentation guide.</p>
+              <img src="admin/assets/images/enf3.png" alt="img" class="img-fluid">
+              <h5 class="my-3">Enfoque necesidades</h5>
+              <p class="mb-0 text-muted">El proyecto busca empoderar a personas sordas con una herramienta autónoma que reduzca barreras en educación, salud, transporte y trabajo, promueva la inclusión laboral, 
+                sensibilice sobre el valor del lenguaje de señas y conecte comunidades a través de la tecnología como puente de comunicación.</p>
             </div>
           </div>
         </div>
