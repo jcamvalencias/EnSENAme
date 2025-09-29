@@ -11,7 +11,7 @@ if(isset($_POST['btningresar'])){
   // Consulta para verificar usuario y contraseña y obtener todos los datos
   $query = "SELECT * FROM tb_usuarios WHERE ID = '$numeroDocumento' AND Clave = '$pass'";
   $result = mysqli_query($conexion, $query);
-
+//Cambio comprobar
   if(mysqli_num_rows($result) > 0){
     $row = mysqli_fetch_assoc($result);
     $_SESSION['txtdoc'] = $numeroDocumento; // Guardar sesión
@@ -28,7 +28,7 @@ if(isset($_POST['btningresar'])){
       echo "<script>window.location='user/index.php';</script>";
     exit();
   } else {
-    $message = "Usuario o contraseña incorrectos"; 
+    $message = "Documento o contraseña incorrectos"; 
   }
 }
 ?>
