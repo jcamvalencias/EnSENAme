@@ -192,9 +192,9 @@ if (!empty($_SESSION['txtdoc'])) {
               <i class="ti ti-edit-circle"></i>
               <span>Editar Perfil</span>
             </a>
-            <a href="#!" class="dropdown-item">
-              <i class="ti ti-user"></i>
-              <span>Ver Perfil</span>
+            <a href="logout.php" class="dropdown-item">
+              <i class="ti ti-power"></i>
+              <span>Salir</span>
             </a>
             <a href="#!" class="dropdown-item">
               <i class="ti ti-power"></i>
@@ -419,7 +419,7 @@ En el entorno laboral, contribuiría a una mayor integración de personas sordas
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" href="logout.php">Logout</a>
                 </div>
             </div>
         </div>
@@ -449,7 +449,7 @@ En el entorno laboral, contribuiría a una mayor integración de personas sordas
   <!-- Required Js -->
   <script src="../assets/js/plugins/popper.min.js"></script>
   <script src="../assets/js/plugins/simplebar.min.js"></script>
-  <script src="../admin/assets/js/plugins/bootstrap.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
   <script src="../assets/js/fonts/custom-font.js"></script>
   <script src="../assets/js/pcoded.js"></script>
   <script src="../assets/js/plugins/feather.min.js"></script>

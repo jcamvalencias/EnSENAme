@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- [Head] start -->
+ //comprobación de linkeo
 
 <head>
   <title>EnSEÑAme</title>
@@ -171,10 +172,158 @@
               <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
             </div>
             <div class="flex-grow-1 ms-3">
-              <h6 class="mb-1"><?php echo htmlspecialchars($nombre); ?></h6>
-              <span><?php echo htmlspecialchars($nombre); ?></span>
+
+
+
+              <h6 class="mb-1">User</h6>
+
+              
+              <?php
+              $host = 'localhost';
+              $kaboom   = 'kaboom';
+              $p_nombre = 'p_nombre';
+              $Clave = 'Clave';
+              $charset = 'utf8mb4_spanish_ci';
+
+              $dsn = "mysql:host=$host;kaboom.sql=$kaboom;charset=$charset";
+              $options = [
+                  PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                  PDO::ATTR_EMULATE_PREPARES   => false,
+              ];
+
+              try {
+                  $pdo = new PDO($dsn, $p_nombre, $Clave, $options);
+              } catch (\PDOException $e) {
+                  // En producción no mostrar detalles del error
+                  throw new \PDOException($e->getMessage(), (int)$e->getCode());
+              }
+              
+              // authenticate.php
+              session_start();
+              require_once 'kaboom.php';
+
+              if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                  header('Location: index.php');
+                  exit;
+              }
+
+              $p_nombre = trim($_POST['username'] ?? '');
+              $Clave = $_POST['password'] ?? '';
+
+              // Validación simple
+              if ($p_nombre === '' || $Clave === '') {
+                  $_SESSION['login_error'] = 'Credenciales inválidas.';
+                  header('Location: index.php');
+                  exit;
+              }
+
+              $stmt = $pdo->prepare('SELECT ID, p_nombre, Clave_hash FROM users WHERE p_nombre = :p_nombre LIMIT 1');
+              $stmt->execute(['p_nombre' => $p_nombre]);
+              $user = $stmt->fetch();
+
+              if ($user && password_verify($password, $user['password_hash'])) {
+                  // Login exitoso: regenerar id de sesión y almacenar datos necesarios
+                  session_regenerate_id(true);
+                  $_SESSION['user'] = [
+                      'ID' => $user['ID'],
+                      'p_nombre' => $user['p_nombre']
+                  ];
+                  // redirigir a la página principal o dashboard
+                  header('Location: index.php');
+                  exit;
+              } else {
+                  $_SESSION['login_error'] = 'Usuario o contraseña incorrectos.';
+                  header('Location: index.php');
+                  exit;
+              }
+              //Cerrar sesion 
+              session_start();
+              $_SESSION = [];
+              if (ini_get('session.use_cookies')) {
+                  $params = session_get_cookie_params();
+                  setcookie(session_name(), '', time() - 42000,
+                      $params['path'], $params['domain'],
+                      $params['secure'], $params['httponly']
+                  );
+              }
+              session_destroy();
+              header('Location: index.php');
+              exit;
+              ?> 
+              <span>Admin</span>
+
             </div>
+            <!-- login_form.php -->
+              <form action="authenticate.php" method="post">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Ingresar</button>
+              </form>
             
+          <?php
+// 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+<style>
+/* CSS mínimo para ubicar el nombre de usuario en la esquina superior derecha */
+.topbar {
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  padding:10px 20px;
+  background:#fff;
+  border-bottom:1px solid #eee;
+}
+.user-badge {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-family:Arial, sans-serif;
+  color:#222;
+}
+.user-badge .avatar {
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#0a84ff;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+.user-badge a { text-decoration:none; color:#0a84ff; margin-left:8px; font-size:0.9rem; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <?php if (!empty($_SESSION['user'])): 
+        // Escapar para evitar XSS
+        $username_safe = htmlspecialchars($_SESSION['user']['username'], ENT_QUOTES, 'UTF-8');
+        // Generar iniciales para avatar (opcional)
+        $initial = strtoupper(substr($username_safe, 0, 1));
+    ?>
+      <div class="user-badge" title="Sesión iniciada">
+        <div class="avatar"><?php echo $initial; ?></div>
+        <div>
+          <div style="font-weight:600;"><?php echo $username_safe; ?></div>
+          <div style="font-size:0.8rem;"><a href="logout.php">Cerrar sesión</a></div>
+        </div>
+      </div>
+    <?php else: ?>
+      <div>
+        <a href="login_form.php">Iniciar sesión</a>
+      </div>
+    <?php endif; ?>
+  </div>
+
+    
           </div>
         </div>
         <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
@@ -211,9 +360,9 @@
               <i class="ti ti-edit-circle"></i>
               <span>Editar Perfil</span>
             </a>
-            <a href="#!" class="dropdown-item">
-              <i class="ti ti-user"></i>
-              <span>Ver Perfil</span>
+            <a href="logout.php" class="dropdown-item">
+              <i class="ti ti-power"></i>
+              <span>Salir</span>
             </a>
             <a href="#!" class="dropdown-item">
               <i class="ti ti-power"></i>
@@ -440,7 +589,7 @@ En el entorno laboral, contribuiría a una mayor integración de personas sordas
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" href="logout.php">Logout</a>
                 </div>
             </div>
         </div>
@@ -493,5 +642,4 @@ En el entorno laboral, contribuiría a una mayor integración de personas sordas
   <script>font_change("Public-Sans");</script>
   
 <!-- [Body] end -->
-
 </html>
