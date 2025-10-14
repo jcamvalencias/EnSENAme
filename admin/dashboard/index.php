@@ -70,9 +70,203 @@ if (!empty($_SESSION['txtdoc'])) {
 
   <a href="javascript:void(0);" class="pc-link">
 
-              <span class="pc-micon"><i class="ti ti-users"></i></span>
-              <span class="pc-mtext">Usuarios</span>
-              <span class="pc-arrow"><i class="ti ti-chevron-down"></i></span>
+
+      </a>
+      <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
+        <div class="dropdown-header">
+          <div class="d-flex mb-1">
+            <div class="flex-shrink-0">
+              <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
+            </div>
+            <div class="flex-grow-1 ms-3">
+
+              <h6 class="mb-1">Camilo</h6>
+
+              
+              <?php
+              $host = '127.0.0.1';
+              $kaboom   = 'kaboom';
+              $p_nombre = 'p_nombre';
+              $Clave = 'Clave';
+              $charset = 'utf8mb4_spanish_ci';
+
+              $dsn = "mysql:host=$host;kaboom.sql=$kaboom;charset=$charset";
+              $options = [
+                  PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                  PDO::ATTR_EMULATE_PREPARES   => false,
+              ];
+
+              try {
+                  $pdo = new PDO($dsn, $p_nombre, $Clave, $options);
+              } catch (\PDOException $e) {
+                  // En producción no mostrar detalles del error
+                  throw new \PDOException($e->getMessage(), (int)$e->getCode());
+              }
+              
+              // authenticate.php
+              session_start();
+              require_once 'kaboom.php';
+
+              if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                  header('Location: index.php');
+                  exit;
+              }
+
+              $p_nombre = trim($_POST['username'] ?? '');
+              $Clave = $_POST['password'] ?? '';
+
+              // Validación simple
+              if ($p_nombre === '' || $Clave === '') {
+                  $_SESSION['login_error'] = 'Credenciales inválidas.';
+                  header('Location: index.php');
+                  exit;
+              }
+
+              $stmt = $pdo->prepare('SELECT ID, p_nombre, Clave_hash FROM users WHERE p_nombre = :p_nombre LIMIT 1');
+              $stmt->execute(['p_nombre' => $p_nombre]);
+              $user = $stmt->fetch();
+
+              if ($user && password_verify($password, $user['password_hash'])) {
+                  // Login exitoso: regenerar id de sesión y almacenar datos necesarios
+                  session_regenerate_id(true);
+                  $_SESSION['user'] = [
+                      'ID' => $user['ID'],
+                      'p_nombre' => $user['p_nombre']
+                  ];
+                  // redirigir a la página principal o dashboard
+                  header('Location: index.php');
+                  exit;
+              } else {
+                  $_SESSION['login_error'] = 'Usuario o contraseña incorrectos.';
+                  header('Location: index.php');
+                  exit;
+              }
+              //Cerrar sesion 
+              session_start();
+              $_SESSION = [];
+              if (ini_get('session.use_cookies')) {
+                  $params = session_get_cookie_params();
+                  setcookie(session_name(), '', time() - 42000,
+                      $params['path'], $params['domain'],
+                      $params['secure'], $params['httponly']
+                  );
+              }
+              session_destroy();
+              header('Location: index.php');
+              exit;
+              ?> 
+              <span>Admin</span>
+            </div>
+            <!-- login_form.php -->
+              <form action="authenticate.php" method="post">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Ingresar</button>
+              </form>
+            
+          <?php
+// 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+<style>
+/* CSS mínimo para ubicar el nombre de usuario en la esquina superior derecha */
+.topbar {
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  padding:10px 20px;
+  background:#fff;
+  border-bottom:1px solid #eee;
+}
+.user-badge {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-family:Arial, sans-serif;
+  color:#222;
+}
+.user-badge .avatar {
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#0a84ff;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+.user-badge a { text-decoration:none; color:#0a84ff; margin-left:8px; font-size:0.9rem; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <?php if (!empty($_SESSION['user'])): 
+        // Escapar para evitar XSS
+        $username_safe = htmlspecialchars($_SESSION['user']['username'], ENT_QUOTES, 'UTF-8');
+        // Generar iniciales para avatar (opcional)
+        $initial = strtoupper(substr($username_safe, 0, 1));
+    ?>
+      <div class="user-badge" title="Sesión iniciada">
+        <div class="avatar"><?php echo $initial; ?></div>
+        <div>
+          <div style="font-weight:600;"><?php echo $username_safe; ?></div>
+          <div style="font-size:0.8rem;"><a href="logout.php">Cerrar sesión</a></div>
+        </div>
+      </div>
+    <?php else: ?>
+      <div>
+        <a href="login_form.php">Iniciar sesión</a>
+      </div>
+    <?php endif; ?>
+  </div>
+
+    
+          </div>
+        </div>
+        <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="drp-t1"
+              data-bs-toggle="tab"
+              data-bs-target="#drp-tab-1"
+              type="button"
+              role="tab"
+              aria-controls="drp-tab-1"
+              aria-selected="true"
+              ><i class="ti ti-user"></i> Perfil</button
+            >
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="drp-t2"
+              data-bs-toggle="tab"
+              data-bs-target="#drp-tab-2"
+              type="button"
+              role="tab"
+              aria-controls="drp-tab-2"
+              aria-selected="false"
+              ><i class="ti ti-settings"></i> Configuración</button
+            >
+          </li>
+        </ul>
+        <div class="tab-content" id="mysrpTabContent">
+          <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1" tabindex="0">
+            <a href="editarperfil.php" class="dropdown-item">
+              <i class="ti ti-edit-circle"></i>
+              <span>Editar Perfil</span>
+            </a>
+            <a href="#!" class="dropdown-item">
+              <i class="ti ti-user"></i>
+              <span>Ver Perfil</span>
             </a>
 
             <ul class="pc-submenu" style="display: none;">
