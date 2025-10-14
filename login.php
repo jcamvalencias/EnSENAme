@@ -117,11 +117,15 @@ if(isset($_POST['btningresar'])){
         mysqli_stmt_close($stmt);
     } else {
 
+    }
+
+
       echo "<script>window.location='user/index.php';</script>";
     exit();
   } else {
     $message = "Usuario o contraseña incorrectos"; 
   }
+
 
 }
 ?>
