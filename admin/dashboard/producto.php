@@ -2,13 +2,17 @@
 session_start();
 include '../../conexion.php';
 $nombre = '';
-if (!empty($_SESSION['txtdoc'])) {
-  $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
-  $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
-  if ($row = mysqli_fetch_assoc($res)) {
-    $nombre = $row['p_nombre'];
+  if (!empty($_SESSION['txtdoc'])) {
+    $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
+    $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
+    if ($row = mysqli_fetch_assoc($res)) {
+      $nombre = $row['p_nombre'];
+    } else {
+      $nombre = 'Usuario';
+    }
+  } else {
+    $nombre = 'Usuario';
   }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -344,7 +348,7 @@ if (!empty($_SESSION['txtdoc'])) {
   </div>
 
   <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/plugins/bootstrap.min.js"></script>
 </body>
 </html>
         </div>
