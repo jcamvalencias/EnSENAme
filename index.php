@@ -71,27 +71,46 @@
       </div>
     </nav>
     <!-- [ Nav ] start -->
-    <img src="admin/assets/images/inicioindex1.png" alt="" class=""
-      data-img="admin/assets/images/inicioindex1.png" data-img-type=".png">
-    <div class="container">
-      <div class="row align-items-center justify-content-between">
-        <div class="col-md-6 col-xl-4">
-          <h1 class="mt-sm-3 text-white mb-4 f-w-600 wow fadeInUp" data-wow-delay="0.2s">¿Quienes somos?
-            <span class="text-primary"></span>
-          </h1>
-          <h5 class="mb-4 text-white opacity-75 wow fadeInUp" data-wow-delay="0.4s"> Somos un equipo multidisciplinario que, junto con la comunidad sorda, desarrolla una app que traduce en tiempo real el lenguaje de señas colombiano (LSC) a texto y voz. 
-            Con inteligencia artificial y visión por computadora buscamos derribar barreras comunicativas y fomentar la inclusión en Colombia.</h5>
-          <div class="my-5 wow fadeInUp" data-wow-delay="0.6s">
-            
-          
-          </div>
-          <img src="" alt="" class=""
-            data-wow-delay="0.8s">
-        </div>
-        <div class="col-lg-7">
-        </div>
-      </div>
-    </div>
+   <!-- Hero Section -->
+<section class="hero-section d-flex align-items-center justify-content-center text-center text-white"
+         style="background: url('admin/assets/images/inicioindex1.png') no-repeat center center/cover; height: 100vh; position: relative;">
+  <div class="overlay"></div>
+  <div class="container position-relative" style="z-index: 2;">
+    <h1 class="display-4 fw-bold mb-3">¿Quiénes somos?</h1>
+    <p class="lead mx-auto" style="max-width: 700px;">
+      Somos un equipo multidisciplinario que, junto con la comunidad sorda, desarrolla una app que traduce en tiempo real el lenguaje de señas colombiano (LSC) a texto y voz.
+      Con inteligencia artificial y visión por computadora buscamos derribar barreras comunicativas y fomentar la inclusión en Colombia.
+    </p>
+  </div>
+</section>
+<style>
+  .hero-section {
+    position: relative;
+    width: 100%;
+    color: #fff; /* texto blanco */
+  }
+
+  .hero-section .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.35); /* un poco más claro para que la imagen se vea mejor */
+  }
+
+  .hero-section h1 {
+    color: #ffffff;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7); /* sombra suave para contraste */
+  }
+
+  .hero-section p {
+    color: #f1f1f1; /* gris claro, más legible */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+  }
+</style>
+
+
   </header>
   <!-- [ Header ] End -->
   <!-- [ Why Mantis ] start -->
@@ -141,23 +160,169 @@
       </div>
     </div>
   </section>
-  <!-- [ Why Mantis ] End -->
-  <!-- [ Complete Combo ] start -->  <
-  <!-- [ Complete Combo ] End -->
-  <!-- [ CTA ] start -->  
-  <!-- [ CTA ] End -->
-  <!-- [ number ] start -->  
-  <!-- [ number ] End -->
-  <!-- [ light/dark ] start -->  
-  <!-- [ light/dark ] End -->
-  <!-- [ webapp ] start -->  
-  <!-- [ webapp ] End -->
-  <!-- [ Why Mantis ] start -->  
-  <!-- [ Why Mantis ] End -->
+  
+<section class="py-5 bg-light" id="proyecto">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="my-3">¿Por qué nace este proyecto?</h2>
+      <p class="text-muted mx-auto" style="max-width: 700px;">
+        EnSEÑAme surge de la necesidad de reducir las barreras comunicativas que enfrentan las personas sordas en Colombia.
+        Nuestro objetivo es ofrecer una herramienta accesible que facilite la comunicación entre personas oyentes y sordas,
+        promoviendo la inclusión y la igualdad de oportunidades en todos los ámbitos.
+      </p>
+    </div>
 
-  <!-- [ Customers Voice ] start -->  
-  <!-- [ Customers Voice ] End -->
-  <!-- [ footer ] start -->
+  <div class="row g-4">
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body text-center">
+        <i class="ti ti-heart" style="font-size: 2rem;"></i>
+        <h5 class="mt-3 fw-semibold">Empatía e Inclusión</h5>
+        <p class="text-muted">Buscamos derribar las barreras que dificultan la integración de la comunidad sorda en la sociedad.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body text-center">
+        <i class="ti ti-3d-cube-sphere" style="font-size: 2rem;"></i>
+        <h5 class="mt-3 fw-semibold">Tecnología al Servicio</h5>
+        <p class="text-muted">Usamos inteligencia artificial y visión por computadora para traducir señas en tiempo real.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body text-center">
+        <i class="ti ti-users" style="font-size: 2rem;"></i>
+        <h5 class="mt-3 fw-semibold">Trabajo en Comunidad</h5>
+        <p class="text-muted">El proyecto se desarrolla en conjunto con miembros de la comunidad sorda y estudiantes multidisciplinarios.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</section>
+
+<!-- Sección: Objetivos del Proyecto -->
+<section class="py-5 bg-white" id="objetivos">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Objetivos del Proyecto</h2>
+      <p class="text-muted mx-auto" style="max-width: 700px;">
+        Este proyecto busca aplicar la inteligencia artificial y la visión por computadora
+        para fortalecer la inclusión comunicativa entre personas sordas y oyentes.
+      </p>
+    </div>
+
+    <!-- Objetivo general -->
+    <div class="card border-0 shadow-sm mb-5 p-4">
+  <div class="card-body text-center">
+    <h4 class="fw-semibold d-flex align-items-center justify-content-center gap-2" style="font-size: 1.6rem;">
+      <i class="ti ti-crown" style="font-size: 2rem;"></i>
+      Objetivo General
+    </h4>
+    <p class="mt-3 text-muted mx-auto" style="max-width: 800px;">
+      Desarrollar una aplicación que permita traducir los gestos del abecedario de señas al español escrito en tiempo real,
+      facilitando la comunicación entre personas sordas y oyentes.
+    </p>
+  </div>
+</div>
+
+    <!-- Objetivos específicos -->
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 objetivo-card">
+          <div class="card-body text-center">
+            <i class="ti ti-3d-cube-sphere" style="font-size: 2rem;"></i>
+            <h5 class="mt-3 fw-semibold">Diseñar y Entrenar el Modelo</h5>
+            <p class="text-muted">Diseñar y entrenar un modelo de reconocimiento de gestos y movimientos asociados al lenguaje de señas.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 objetivo-card">
+          <div class="card-body text-center">
+            <i class="ti ti-zoom-check" style="font-size: 2rem;"></i>
+            <h5 class="mt-3 fw-semibold">Evaluar la Precisión</h5>
+            <p class="text-muted">Evaluar la precisión y eficacia del sistema en diversos contextos con diferentes dialectos de lenguaje de señas.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 objetivo-card">
+          <div class="card-body text-center">
+            <i class="ti ti-hand-stop" style="font-size: 2rem;"></i>
+            <h5 class="mt-3 fw-semibold">Analizar Gestos Comunes</h5>
+            <p class="text-muted">Analizar e identificar los gestos más comunes del lenguaje de señas para optimizar el reconocimiento del sistema.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<style>
+  /* Animación para las tarjetas */
+  .card {
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+  }
+
+  .card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-body i {
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  .card:hover i {
+    transform: scale(1.2);
+    color: #1e63d0;
+  }
+
+  .objetivo-card {
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+  }
+
+  .objetivo-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .objetivo-card i {
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  .objetivo-card:hover i {
+    transform: scale(1.2);
+    color: #1e63d0;
+  }
+  
+  .card-body h4 i {
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  .card-body h4:hover i {
+    transform: scale(1.2);
+    color: #1e63d0;
+  }
+
+
+
+</style>
+
+
   <footer class="footer bg-dark text-white">
     <div class="container">
       <div class="row">

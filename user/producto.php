@@ -426,10 +426,10 @@ if (!empty($_SESSION['txtdoc'])) {
               <div class="mb-3">
                 <p class="text-muted">Conceptos básicos e historia del Lenguaje de Señas Colombiano</p>
               </div>
-              <iframe width="100%" height="400"
-                src="https://www.youtube.com/embed/Sq7aNz5kHOo"
-                title="Introducción a la LSC" frameborder="0"
-                allowfullscreen></iframe>
+              <video width="100%" height="400" controls preload="metadata">
+                <source src="../admin/assets/videos/VideoGuia1.mp4" type="video/mp4">
+                Tu navegador no soporta la reproducción de video. Puedes abrirlo en una nueva pestaña <a href="../admin/assets/videos/VideoGuia1.mp4" target="_blank">aquí</a>.
+              </video>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -603,6 +603,34 @@ if (!empty($_SESSION['txtdoc'])) {
           card.style.opacity = '1';
           card.style.transform = 'translateY(0)';
         }, index * 100);
+      });
+    });
+
+    // Pausar videos y detener iframes (YouTube) al cerrar modales
+    document.addEventListener('DOMContentLoaded', function() {
+      // Guardar src original de iframes dentro de modales
+      document.querySelectorAll('.modal iframe').forEach(function(iframe) {
+        iframe.dataset.src = iframe.src || '';
+      });
+
+      document.querySelectorAll('.modal').forEach(function(modalEl) {
+        modalEl.addEventListener('show.bs.modal', function () {
+          // Restaurar iframes al abrir
+          modalEl.querySelectorAll('iframe').forEach(function(iframe) {
+            if (iframe.dataset.src) iframe.src = iframe.dataset.src;
+          });
+        });
+
+        modalEl.addEventListener('hidden.bs.modal', function () {
+          // Pausar y reiniciar videos
+          modalEl.querySelectorAll('video').forEach(function(video) {
+            try { video.pause(); video.currentTime = 0; } catch (e) {}
+          });
+          // Detener iframes (YouTube) vaciando src
+          modalEl.querySelectorAll('iframe').forEach(function(iframe) {
+            iframe.src = '';
+          });
+        });
       });
     });
   </script>
