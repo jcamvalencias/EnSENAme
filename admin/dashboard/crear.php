@@ -30,13 +30,17 @@
 session_start();
 include '../../conexion.php';
 $nombre = '';
-if (!empty($_SESSION['txtdoc'])) {
-  $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
-  $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
-  if ($row = mysqli_fetch_assoc($res)) {
-    $nombre = $row['p_nombre'];
+  if (!empty($_SESSION['txtdoc'])) {
+    $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
+    $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
+    if ($row = mysqli_fetch_assoc($res)) {
+      $nombre = $row['p_nombre'];
+    } else {
+      $nombre = 'Usuario';
+    }
+  } else {
+    $nombre = 'Usuario';
   }
-}
 ?>
 
 </head>
@@ -170,7 +174,7 @@ if (!empty($_SESSION['txtdoc'])) {
               <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
             </div>
             <div class="flex-grow-1 ms-3">
-              <h6 class="mb-1"><?php echo $_SESSION['primer_nombre']; ?></h6>
+              <h6 class="mb-1"><?php echo isset($_SESSION['display_name']) ? htmlspecialchars($_SESSION['display_name']) : (isset($_SESSION['primer_nombre']) ? htmlspecialchars($_SESSION['primer_nombre']) : 'Usuario'); ?></h6>
               <span>Admin</span>
             </div>
             
@@ -210,9 +214,9 @@ if (!empty($_SESSION['txtdoc'])) {
               <i class="ti ti-power"></i>
               <span>Logout</span>
             </a>
-            <a href="#!" class="dropdown-item">
-              <i class="ti ti-user"></i>
-              <span>View Profile</span>
+            <a href="logout.php" class="dropdown-item">
+              <i class="ti ti-power"></i>
+              <span>Logout</span>
             </a>
             <a href="#!" class="dropdown-item">
               <i class="ti ti-power"></i>

@@ -1,3 +1,12 @@
+<?php
+// include central de sesión (autogenerado)
+$sessionInclude = __DIR__ . '/../includes/session.php';
+if (file_exists($sessionInclude)) {
+    require_once $sessionInclude;
+} else {
+    if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <!-- [Head] start -->

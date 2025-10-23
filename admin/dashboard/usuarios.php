@@ -12,18 +12,46 @@
   <meta name="keywords" content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
   <meta name="author" content="CodedThemes">
   <?php
-session_start();
-include "../../conexion.php";
+  $sessionInclude = __DIR__ . '/../../includes/session.php';
+  if (file_exists($sessionInclude)) require_once $sessionInclude;
+  include "../../conexion.php";
 $nombre = '';
-if (!empty($_SESSION['txtdoc'])) {
-  $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
-  $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
-  if ($row = mysqli_fetch_assoc($res)) {
-    $nombre = $row['p_nombre'];
+  // Redirect to login if there's no active session
+  if (empty($_SESSION['txtdoc'])) {
+    header('Location: ../../login.php');
+    exit;
   }
-}
+  if (!empty($_SESSION['txtdoc'])) {
+    $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
+    $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
+    if ($row = mysqli_fetch_assoc($res)) {
+      // Prefer display_name if set
+      if (!empty($_SESSION['display_name'])) {
+        $nombre = $_SESSION['display_name'];
+      } else {
+        $nombre = $row['p_nombre'];
+      }
+    } else {
+      $nombre = 'Usuario';
+    }
+  } else {
+    $nombre = 'Usuario';
+  }
 $query = "SELECT * FROM tb_usuarios";
 $result = mysqli_query($conexion, $query);
+// Handle flag/unflag requests to mark users for password change
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['user_id'])) {
+  $action = $_POST['action'];
+  $user_id = mysqli_real_escape_string($conexion, $_POST['user_id']);
+  if ($action === 'flag') {
+    mysqli_query($conexion, "UPDATE tb_usuarios SET needs_pw_change = 1 WHERE ID = '$user_id'");
+  } elseif ($action === 'unflag') {
+    mysqli_query($conexion, "UPDATE tb_usuarios SET needs_pw_change = 0 WHERE ID = '$user_id'");
+  }
+  // Redirect back to this page using an absolute path to avoid relative URL issues
+  header('Location: /enseñame/EnSENAme/admin/dashboard/usuarios.php');
+  exit;
+}
 ?>
 
   <!-- [Favicon] icon -->
@@ -166,9 +194,9 @@ $result = mysqli_query($conexion, $query);
         data-bs-auto-close="outside"
         aria-expanded="false"
       >
-        <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+    <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
 
-  <span><?php echo htmlspecialchars($_SESSION['primer_nombre']); ?></span>
+  <span><?php echo htmlspecialchars(isset($nombre) && $nombre !== '' ? $nombre : 'Usuario'); ?></span>
       </a>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
@@ -213,9 +241,9 @@ $result = mysqli_query($conexion, $query);
         </ul>
         <div class="tab-content" id="mysrpTabContent">
           <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1" tabindex="0">
-            <a href="#!" class="dropdown-item">
-              <i class="ti ti-edit-circle"></i>
-              <span>Edit Profile</span>
+            <a href="logout.php" class="dropdown-item">
+              <i class="ti ti-power"></i>
+              <span>Logout</span>
             </a>
             <a href="#!" class="dropdown-item">
               <i class="ti ti-user"></i>
@@ -300,39 +328,82 @@ $result = mysqli_query($conexion, $query);
                 <tr>
                     <th>#</th>
                     <th>Tipo de Documento</th>
-                    <th>Primer Nombre</th>
-                    <th>Segundo Nombre</th>
-                    <th>Primer Apellido</th>
-                    <th>Segundo Apellido</th>
+              <th>Nombre</th>
                     <th>Clave (Encriptada)</th>
                     <th>Rol</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php
-                // Verificar si hay resultados
-                if (mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        echo "<tr>
-                                <td>" . $row['ID'] . "</td>
-                                <td>" . $row['Tipo_Documento'] . "</td>
-                                <td>" . $row['p_nombre'] . "</td>
-                                <td>" . $row['s_nombre'] . "</td>
-                                <td>" . $row['p_apellido'] . "</td>
-                                <td>" . $row['s_apellido'] . "</td>
-                                <td>" . $row['Clave'] . "</td>
-                                <td>" . $row['id_rol'] . "</td>
-                                <td>
-                                    <a href='editar.php?id=" . $row['ID'] . "' class='btn btn-warning btn-sm'>Editar</a>
-                                    <a href='eliminar.php?id=" . $row['ID'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"¿Estás seguro de eliminar este usuario?\")'>Eliminar</a>
-                                </td>
-                            </tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='9' class='text-center'>No hay usuarios registrados</td></tr>";
-                }
-                ?>
+        <?php
+        // Verificar si hay resultados
+        if (mysqli_num_rows($result) > 0) {
+          while ($row = mysqli_fetch_assoc($result)) {
+            $id = htmlspecialchars($row['ID']);
+            $tipoDoc = htmlspecialchars($row['Tipo_Documento']);
+            // Build full name for display
+            $p_nombre = trim($row['p_nombre']);
+            $s_nombre = trim($row['s_nombre']);
+            $p_apellido = trim($row['p_apellido']);
+            $s_apellido = trim($row['s_apellido']);
+            $nameParts = array_filter([$p_nombre, $s_nombre, $p_apellido, $s_apellido]);
+            $fullName = htmlspecialchars(implode(' ', $nameParts));
+            $clave_raw = $row['Clave'];
+            // Detectar tipo de hash
+            if (preg_match('/^[a-f0-9]{32}$/i', $clave_raw)) {
+              $hash_type = 'MD5';
+              $badge_class = 'bg-danger';
+            } elseif (strpos($clave_raw, '$argon2') === 0) {
+              $hash_type = 'Argon2';
+              $badge_class = 'bg-success';
+            } elseif (strpos($clave_raw, '$2y$') === 0 || strpos($clave_raw, '$2a$') === 0 || strpos($clave_raw, '$2b$') === 0) {
+              $hash_type = 'bcrypt';
+              $badge_class = 'bg-success';
+            } elseif (trim($clave_raw) === '') {
+              $hash_type = 'empty';
+              $badge_class = 'bg-warning';
+            } else {
+              $hash_type = 'other';
+              $badge_class = 'bg-secondary';
+            }
+            $masked = htmlspecialchars(substr($clave_raw, 0, 12)) . '...';
+            $rol = htmlspecialchars($row['id_rol']);
+            $needs = intval($row['needs_pw_change']);
+            ?>
+            <tr>
+              <td><?= $id ?></td>
+              <td><?= $tipoDoc ?></td>
+              <td><?= $fullName ?></td>
+              <td>
+                <span class="badge <?= $badge_class ?> text-white"><?= $hash_type ?></span>
+                <br>
+                <small title="<?= htmlspecialchars($clave_raw) ?>"><?= $masked ?></small>
+              </td>
+              <td><?= $rol ?></td>
+              <td>
+                <a href="/enseñame/EnSENAme/admin/dashboard/editar.php?id=<?= $id ?>" class="btn btn-warning btn-sm">Editar</a>
+                <a href="/enseñame/EnSENAme/admin/dashboard/eliminar.php?id=<?= $id ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</a>
+                <?php if ($needs): ?>
+                  <form method="post" style="display:inline">
+                    <input type="hidden" name="user_id" value="<?= $id ?>">
+                    <input type="hidden" name="action" value="unflag">
+                    <button type="submit" class="btn btn-sm btn-outline-success">Quitar flag</button>
+                  </form>
+                <?php else: ?>
+                  <form method="post" style="display:inline">
+                    <input type="hidden" name="user_id" value="<?= $id ?>">
+                    <input type="hidden" name="action" value="flag">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Forzar cambio</button>
+                  </form>
+                <?php endif; ?>
+              </td>
+            </tr>
+            <?php
+          }
+        } else {
+          echo "<tr><td colspan='9' class='text-center'>No hay usuarios registrados</td></tr>";
+        }
+        ?>
             </tbody>
             </table>
           </div>

@@ -1,7 +1,5 @@
-<?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-  session_start();
-}
+$php_open = '<?php';
+require_once __DIR__ . '/../includes/session.php';
 include '../conexion.php';
 $nombre = '';
 if (!empty($_SESSION['txtdoc'])) {
@@ -9,7 +7,11 @@ if (!empty($_SESSION['txtdoc'])) {
   $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
   if ($row = mysqli_fetch_assoc($res)) {
     $nombre = $row['p_nombre'];
+  } else {
+    $nombre = 'Usuario';
   }
+} else {
+  $nombre = 'Usuario';
 }
 ?>
 <!DOCTYPE html>
@@ -121,7 +123,7 @@ if (!empty($_SESSION['txtdoc'])) {
         aria-expanded="false"
       >
           <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
-          <span><?php echo htmlspecialchars($nombre); ?></span>
+          <span><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></span>
       </a>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
@@ -130,8 +132,8 @@ if (!empty($_SESSION['txtdoc'])) {
               <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
             </div>
             <div class="flex-grow-1 ms-3">
-              <h6 class="mb-1"><?php echo htmlspecialchars($nombre); ?></h6>
-              <span><?php echo htmlspecialchars($nombre); ?></span>
+              <h6 class="mb-1"><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></h6>
+              <span><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></span>
             </div>
             
           </div>
@@ -336,6 +338,6 @@ if (!empty($_SESSION['txtdoc'])) {
   </div>
 
   <!-- Bootstrap JS -->
-  <script src="../admin/assets/js/plugins/bootstrap.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
 </body>
 </html>
