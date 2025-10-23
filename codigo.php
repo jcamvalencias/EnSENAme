@@ -31,6 +31,25 @@ function guardarMensaje($de, $para, $mensaje) {
     $de = intval($de);
     $para = intval($para);
     $mensaje = mysqli_real_escape_string($conexion, $mensaje);
+    
+    // Verificar si la tabla existe, si no, crearla
+    $checkTable = mysqli_query($conexion, "SHOW TABLES LIKE 'tb_mensajes'");
+    if (mysqli_num_rows($checkTable) == 0) {
+        // Crear la tabla si no existe
+        $createTable = "CREATE TABLE `tb_mensajes` (
+          `id` INT AUTO_INCREMENT PRIMARY KEY,
+          `de_usuario` INT NOT NULL,
+          `para_usuario` INT NOT NULL,
+          `mensaje` TEXT NOT NULL,
+          `fecha` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          INDEX `idx_conversacion` (`de_usuario`, `para_usuario`, `fecha`),
+          INDEX `idx_usuario_fecha` (`de_usuario`, `fecha`),
+          FOREIGN KEY (`de_usuario`) REFERENCES `tb_usuarios`(`ID`) ON DELETE CASCADE,
+          FOREIGN KEY (`para_usuario`) REFERENCES `tb_usuarios`(`ID`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci";
+        mysqli_query($conexion, $createTable);
+    }
+    
     $sql = "INSERT INTO tb_mensajes (de_usuario, para_usuario, mensaje, fecha) VALUES ($de, $para, '$mensaje', NOW())";
     return mysqli_query($conexion, $sql);
 }
@@ -42,6 +61,12 @@ function obtenerMensajes($de, $para) {
     $para = intval($para);
     $sql = "SELECT * FROM tb_mensajes WHERE (de_usuario=$de AND para_usuario=$para) OR (de_usuario=$para AND para_usuario=$de) ORDER BY fecha ASC";
     $res = mysqli_query($conexion, $sql);
+    
+    if (!$res) {
+        // Si la tabla no existe, devolver array vacío
+        return [];
+    }
+    
     $mensajes = [];
     while($row = mysqli_fetch_assoc($res)) {
         $mensajes[] = $row;

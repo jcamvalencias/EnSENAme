@@ -75,9 +75,15 @@ if (empty($nombre_completo)) {
     </a>
   </li>
   <li class="pc-item">
+    <a href="chat.php" class="pc-link">
+      <span class="pc-micon"><i class="ti ti-brand-hipchat"></i></span>
+      <span class="pc-mtext">Chat</span>
+    </a>
+  </li>
+  <li class="pc-item">
           <a href="servicio.php" class="pc-link">
             <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
-            <span class="pc-mtext">Chats</span>
+            <span class="pc-mtext">Servicios</span>
           </a>
         </li>
 </ul>
