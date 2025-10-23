@@ -1,18 +1,30 @@
-$php_open = '<?php';
-
+<?php
 require_once __DIR__ . '/../includes/session.php';
+
+// Verificar si el usuario está logueado
+if (empty($_SESSION['txtdoc'])) {
+    header('Location: ../login.php');
+    exit();
+}
+
 include '../conexion.php';
-$nombre = '';
-if (!empty($_SESSION['txtdoc'])) {
-  $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
-  $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
-  if ($row = mysqli_fetch_assoc($res)) {
+
+// Obtener información del usuario desde la base de datos
+$doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
+$res = mysqli_query($conexion, "SELECT p_nombre, s_nombre, p_apellido, s_apellido FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
+if ($row = mysqli_fetch_assoc($res)) {
     $nombre = $row['p_nombre'];
-  } else {
-    $nombre = 'Usuario';
-  }
+    $nombre_completo = trim($row['p_nombre'] . ' ' . $row['s_nombre'] . ' ' . $row['p_apellido'] . ' ' . $row['s_apellido']);
 } else {
-  $nombre = 'Usuario';
+    $nombre = 'Usuario';
+    $nombre_completo = 'Usuario';
+}
+
+if (empty($nombre)) {
+    $nombre = 'Usuario';
+}
+if (empty($nombre_completo)) {
+    $nombre_completo = 'Usuario';
 }
 ?>
 <!DOCTYPE html>
@@ -123,8 +135,8 @@ if (!empty($_SESSION['txtdoc'])) {
         data-bs-auto-close="outside"
         aria-expanded="false"
       >
-                  <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
-          <span><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></span>
+        <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+        <span><?php echo htmlspecialchars($nombre); ?></span>
       </a>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
@@ -133,8 +145,8 @@ if (!empty($_SESSION['txtdoc'])) {
               <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
             </div>
             <div class="flex-grow-1 ms-3">
-              <h6 class="mb-1"><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></h6>
-              <span><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></span>
+              <h6 class="mb-1"><?php echo htmlspecialchars($nombre_completo); ?></h6>
+              <span>Usuario</span>
             </div>
             
           </div>
@@ -183,15 +195,15 @@ if (!empty($_SESSION['txtdoc'])) {
             </a>
           </div>
           <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
-            <a href="#!" class="dropdown-item">
+            <a href="#" class="dropdown-item">
               <i class="ti ti-help"></i>
-              <span>Support</span>
+              <span>Soporte</span>
             </a>
-            <a href="#!" class="dropdown-item">
+            <a href="account-profile.php" class="dropdown-item">
               <i class="ti ti-user"></i>
-              <span>Account Settings</span>
+              <span>Configuración de Cuenta</span>
             </a>
-            <a href="#!" class="dropdown-item">
+            <a href="#" class="dropdown-item">
               <i class="ti ti-messages"></i>
               <span>Feedback</span>
             </a>
