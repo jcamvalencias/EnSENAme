@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "keywords": ["qué es la lsc", "lengua de señas", "que es la lsc"],
+    "response": "La LSC (Lengua de Señas Colombiana) es el idioma natural de la comunidad sorda en Colombia. Es una lengua visual-gestual con su propia gramática y sintaxis."
+  },
+  {
+    "id": 2,
+    "keywords": ["cómo aprender", "aprender lsc", "como aprender"],
+    "response": "Puedes aprender LSC en instituciones y cursos certificados, con instructores sordos, y practicando con la comunidad. Recursos útiles: Fenascol e INSOR."
+  },
+  {
+    "id": 3,
+    "keywords": ["hola", "buenas", "buen día"],
+    "response": "¡Hola!, Soy el bot de información sobre LSC. Pregúntame algo sobre la lengua o la inclusión."
+  }
+]

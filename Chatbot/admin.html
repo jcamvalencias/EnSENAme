@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Panel de Respuestas - Chatbot LSC</title>
+  <link rel="stylesheet" href="styleadmin.css">
+  <style>
+    /* Mensajes de estado */
+    #status { display: none; margin: 12px 0; padding: 10px 12px; border-radius: 6px; }
+    #status.success { background: #e6ffed; color: #065f46; border: 1px solid #bbf7d0; }
+    #status.error { background: #fff0f0; color: #7f1d1d; border: 1px solid #f5c2c7; }
+    .small { font-size: 0.9em; color: #555; }
+    button[disabled] { opacity: 0.6; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <h1>Panel de administración del ChatBot LSC</h1>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <h3>Agregar nueva respuesta</h3>
+  <form id="addForm">
+    <input type="text" id="keywords" placeholder="Palabras clave (separadas por coma)" required />
+    <textarea id="response" placeholder="Respuesta del bot" required></textarea>
+    <button type="submit">Agregar</button>
+  </form>
+
+  <h3>Respuestas actuales</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Palabras clave</th>
+        <th>Respuesta</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="responsesTable"></tbody>
+  </table>
+
+  <script>
+    const table = document.getElementById("responsesTable");
+    const form = document.getElementById("addForm");
+    const status = document.getElementById("status");
+
+    function showStatus(message, type = 'success', timeout = 4000) {
+      status.className = '';
+      status.classList.add(type);
+      status.textContent = message;
+      status.style.display = 'block';
+      if (timeout) {
+        setTimeout(() => { status.style.display = 'none'; }, timeout);
+      }
+    }
+
+    async function safeFetch(url, options = {}) {
+      try {
+        const res = await fetch(url, options);
+        if (!res.ok) {
+          let errMsg = `HTTP ${res.status}`;
+          try {
+            const j = await res.json();
+            errMsg = j.error || j.message || JSON.stringify(j);
+          } catch (e) {
+            const t = await res.text();
+            if (t) errMsg = t;
+          }
+          throw new Error(errMsg);
+        }
+        // Some endpoints may return empty body (204); handle that
+        const text = await res.text();
+        try { return text ? JSON.parse(text) : null; } catch { return text; }
+      } catch (err) {
+        throw err;
+      }
+    }
+
+    async function loadResponses() {
+      table.innerHTML = '<tr><td colspan="4" class="small">Cargando...</td></tr>';
+      try {
+        const data = await safeFetch('/api/responses');
+        renderTable(Array.isArray(data) ? data : []);
+      } catch (err) {
+        table.innerHTML = '';
+        showStatus('Error cargando respuestas: ' + err.message, 'error', 8000);
+      }
+    }
+
+    function renderTable(data) {
+      table.innerHTML = "";
+      data.forEach(r => {
+        const row = document.createElement('tr');
+
+        const tdId = document.createElement('td');
+        tdId.textContent = r.id;
+
+        const tdKw = document.createElement('td');
+        const inputKw = document.createElement('input');
+        inputKw.value = (r.keywords || []).join(', ');
+        inputKw.id = `kw-${r.id}`;
+        tdKw.appendChild(inputKw);
+
+        const tdResp = document.createElement('td');
+        const ta = document.createElement('textarea');
+        ta.id = `resp-${r.id}`;
+        ta.textContent = r.response || '';
+        tdResp.appendChild(ta);
+
+        const tdActions = document.createElement('td');
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'edit';
+        saveBtn.textContent = '💾 Guardar';
+        saveBtn.addEventListener('click', () => updateResponse(r.id, saveBtn));
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'delete';
+        delBtn.textContent = '🗑️ Eliminar';
+        delBtn.addEventListener('click', () => deleteResponse(r.id, delBtn));
+
+        tdActions.appendChild(saveBtn);
+        tdActions.appendChild(document.createTextNode(' '));
+        tdActions.appendChild(delBtn);
+
+        row.appendChild(tdId);
+        row.appendChild(tdKw);
+        row.appendChild(tdResp);
+        row.appendChild(tdActions);
+
+        table.appendChild(row);
+      });
+      if (data.length === 0) {
+        table.innerHTML = '<tr><td colspan="4" class="small">No hay respuestas configuradas.</td></tr>';
+      }
+    }
+
+    function validateEntry(keywords, response) {
+      if (!keywords || !keywords.trim()) {
+        showStatus('Las palabras clave no pueden estar vacías.', 'error');
+        return false;
+      }
+      if (!response || response.trim().length < 3) {
+        showStatus('La respuesta debe tener al menos 3 caracteres.', 'error');
+        return false;
+      }
+      return true;
+    }
+
+    async function updateResponse(id, btn) {
+      const keywords = document.getElementById(`kw-${id}`).value;
+      const response = document.getElementById(`resp-${id}`).value;
+      if (!validateEntry(keywords, response)) return;
+      btn.disabled = true;
+      try {
+        await safeFetch(`/api/responses/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ keywords, response })
+        });
+        showStatus('Respuesta actualizada.', 'success');
+      } catch (err) {
+        showStatus('Error al actualizar: ' + err.message, 'error', 7000);
+      } finally {
+        btn.disabled = false;
+        loadResponses();
+      }
+    }
+
+    async function deleteResponse(id, btn) {
+      if (!confirm('¿Seguro que quieres eliminar esta respuesta?')) return;
+      btn.disabled = true;
+      try {
+        await safeFetch(`/api/responses/${id}`, { method: 'DELETE' });
+        showStatus('Respuesta eliminada.', 'success');
+      } catch (err) {
+        showStatus('Error al eliminar: ' + err.message, 'error', 7000);
+      } finally {
+        btn.disabled = false;
+        loadResponses();
+      }
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const keywords = document.getElementById('keywords').value;
+      const response = document.getElementById('response').value;
+      if (!validateEntry(keywords, response)) return;
+      submitBtn.disabled = true;
+      try {
+        await safeFetch('/api/responses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ keywords, response })
+        });
+        showStatus('Nueva respuesta agregada.', 'success');
+        form.reset();
+      } catch (err) {
+        showStatus('Error al agregar: ' + err.message, 'error', 7000);
+      } finally {
+        submitBtn.disabled = false;
+        loadResponses();
+      }
+    });
+
+    // Cargar inicialmente
+    loadResponses();
+  </script>
+</body>
+</html>

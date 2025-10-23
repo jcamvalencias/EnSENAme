@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatBot Comunidad Sorda - LSC</title>
+  <link rel="stylesheet" href="stylechatbot.css" >
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">ChatBot LSC - Comunidad Sorda</div>
+
+    <div class="messages" id="chat"></div>
+
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Escribe tu duda sobre LSC..." />
+      <input type="file" id="fileInput" />
+      <button id="sendBtn">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+  const chat = document.getElementById("chat");
+  const sendBtn = document.getElementById("sendBtn");
+
+  function appendMessage(text, sender) {
+    const msg = document.createElement("div");
+    msg.classList.add("message", sender);
+    msg.innerText = text;
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const fileInput = document.getElementById("fileInput");
+    const userText = input.value.trim();
+
+    if (!userText && fileInput.files.length === 0) return;
+
+    appendMessage(userText || "📎 Archivo enviado", "user");
+    input.value = "";
+
+    // Si hay archivo, lo subimos primero
+    if (fileInput.files.length > 0) {
+      const form = new FormData();
+      form.append("file", fileInput.files[0]);
+
+      try {
+        const upRes = await fetch("/api/upload", {
+          method: "POST",
+          body: form
+        });
+        const upJson = await upRes.json();
+        appendMessage(`Bot: ${upJson.message}`, "bot");
+      } catch (err) {
+        appendMessage("Error subiendo archivo.", "bot");
+        console.error(err);
+      } finally {
+        fileInput.value = "";
+      }
+      // si además hay texto, lo enviamos al chat
+      if (!userText) return;
+    }
+
+    // Enviar texto al endpoint /api/chat
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userText })
+      });
+      const data = await res.json();
+      appendMessage(data.reply, "bot");
+    } catch (err) {
+      appendMessage("Error de conexión con la API.", "bot");
+      console.error(err);
+    }
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+
+  document.getElementById("userInput").addEventListener("keypress", function (e) {
+    if (e.key === "Enter") sendMessage();
+  });
+</script>
+</body>
+</html>
