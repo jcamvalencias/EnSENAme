@@ -515,68 +515,7 @@
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-body">
-                <div class="controls">
-                    <button id="startBtn" class="btn btn-primary">
-                        <i class="ti ti-camera"></i>
-                        Iniciar Cámara
-                    </button>
-                    <button id="captureBtn" class="btn btn-primary" disabled>
-                        <i class="ti ti-capture"></i>
-                        Capturar Seña
-                    </button>
-                    <button id="trainBtn" class="btn btn-success" disabled>
-                        <i class="ti ti-brain"></i>
-                        Entrenar Modelo
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="ti ti-school"></i> Entrenar nuevas señas</h3>
-            </div>
-            <div class="card-body">
-                <p class="text-muted">Agrega ejemplos para entrenar el modelo con nuevas señas</p>
-                <div class="mb-3">
-                    <label for="className" class="form-label">Nombre de la seña</label>
-                    <input type="text" id="className" class="form-control" placeholder="Ej: Hola, Gracias, Por favor...">
-                </div>
-                <button id="addExampleBtn" class="btn btn-warning" disabled>
-                    <i class="ti ti-plus"></i>
-                    Agregar ejemplo
-                </button>
-                <p id="exampleCount">0 ejemplos agregados</p>
-            </div>
-        </div>
 
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="ti ti-database"></i> Guardar y Cargar Datos de Entrenamiento</h3>
-            </div>
-            <div class="card-body">
-                <p class="text-muted">Puedes guardar tus datos de entrenamiento para usarlos posteriormente</p>
-                
-                <div class="save-options">
-                    <button id="saveLocalBtn" class="btn btn-success" disabled>
-                        <i class="ti ti-download"></i>
-                        Guardar localmente
-                    </button>
-                    <button id="loadLocalBtn" class="btn btn-warning">
-                        <i class="ti ti-upload"></i>
-                        Cargar desde dispositivo
-                    </button>
-                    <button id="saveServerBtn" class="btn btn-success" disabled>
-                        <i class="ti ti-cloud"></i>
-                        Guardar en servidor
-                    </button>
-                </div>
-                
-                <div id="saveStatus"></div>
-            </div>
-        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0"></script>
@@ -598,19 +537,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Configurar elementos de la interfaz
             video = document.getElementById('video');
-            const startBtn = document.getElementById('startBtn');
-            const captureBtn = document.getElementById('captureBtn');
-            const trainBtn = document.getElementById('trainBtn');
-            const addExampleBtn = document.getElementById('addExampleBtn');
-            const classNameInput = document.getElementById('className');
             const predictionText = document.getElementById('predictionText');
             const confidenceLevel = document.getElementById('confidenceLevel');
             const confidenceValue = document.getElementById('confidenceValue');
-            const exampleCount = document.getElementById('exampleCount');
-            const saveLocalBtn = document.getElementById('saveLocalBtn');
-            const loadLocalBtn = document.getElementById('loadLocalBtn');
-            const saveServerBtn = document.getElementById('saveServerBtn');
-            const saveStatus = document.getElementById('saveStatus');
             
             // Inicializar el clasificador
             classifier = knnClassifier.create();
@@ -620,15 +549,11 @@
                 mobilenet = model;
                 isModelReady = true;
                 console.log('Modelo MobileNet cargado');
-                
-                if (isVideoReady) {
-                    captureBtn.disabled = false;
-                    trainBtn.disabled = false;
-                }
+                predictionText.textContent = 'Modelo cargado. Usa los botones de arriba para interactuar.';
             });
             
-            // Evento para iniciar la cámara
-            startBtn.addEventListener('click', async () => {
+            // Función para inicializar la cámara
+            async function initCamera() {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ 
                         video: { width: 640, height: 480 } 
@@ -637,61 +562,16 @@
                     video.play();
                     
                     isVideoReady = true;
-                    startBtn.disabled = true;
-                    
-                    if (isModelReady) {
-                        captureBtn.disabled = false;
-                        trainBtn.disabled = false;
-                    }
-                    
                     console.log('Cámara iniciada correctamente');
+                    predictionText.textContent = 'Cámara iniciada. Modelo listo para usar.';
                 } catch (error) {
                     console.error('Error al acceder a la cámara:', error);
                     predictionText.textContent = 'Error: No se pudo acceder a la cámara. Asegúrate de dar los permisos necesarios.';
                 }
-            });
+            }
             
-            // Evento para agregar ejemplos de entrenamiento
-            addExampleBtn.addEventListener('click', () => {
-                const className = classNameInput.value.trim();
-                if (className && isModelReady && isVideoReady) {
-                    addExample(className);
-                    examplesAdded++;
-                    exampleCount.textContent = `${examplesAdded} ejemplos agregados`;
-                    classNameInput.value = '';
-                    
-                    // Habilitar botones de guardado
-                    saveLocalBtn.disabled = false;
-                    saveServerBtn.disabled = false;
-                }
-            });
-            
-            // Habilitar el botón de agregar cuando se escribe un nombre de clase
-            classNameInput.addEventListener('input', () => {
-                addExampleBtn.disabled = !classNameInput.value.trim();
-            });
-            
-            // Evento para entrenar el modelo
-            trainBtn.addEventListener('click', () => {
-                if (classifier.getNumClasses() > 0) {
-                    predictionText.textContent = 'Entrenando modelo...';
-                    setTimeout(predict, 1000); // Empezar a predecir después de entrenar
-                } else {
-                    predictionText.textContent = 'Primero agrega algunos ejemplos para entrenar';
-                }
-            });
-            
-            // Evento para capturar y predecir
-            captureBtn.addEventListener('click', predict);
-            
-            // Evento para guardar datos localmente
-            saveLocalBtn.addEventListener('click', saveTrainingDataLocal);
-            
-            // Evento para cargar datos locales
-            loadLocalBtn.addEventListener('click', loadTrainingDataLocal);
-            
-            // Evento para guardar en servidor
-            saveServerBtn.addEventListener('click', saveTrainingDataToServer);
+            // Inicializar automáticamente la cámara
+            initCamera();
             
             // Función para agregar ejemplos al clasificador
             async function addExample(className) {
@@ -820,13 +700,7 @@
                                     return total + trainingData.examples[className].length;
                                 }, 0);
                                 
-                                exampleCount.textContent = `${examplesAdded} ejemplos cargados`;
-                                showStatus('Datos cargados correctamente. Ahora entrena el modelo.', 'success');
-                                
-                                // Habilitar botones
-                                trainBtn.disabled = false;
-                                saveLocalBtn.disabled = false;
-                                saveServerBtn.disabled = false;
+                                showStatus(`Datos cargados: ${examplesAdded} ejemplos. Listo para usar.`, 'success');
                                 
                             } catch (error) {
                                 console.error('Error al procesar el archivo:', error);
@@ -843,68 +717,42 @@
                     showStatus('Error al cargar datos locales', 'error');
                 }
             }
-            
-            // Función para guardar datos en servidor (simulado)
-            async function saveTrainingDataToServer() {
-                try {
-                    // Simular envío a servidor
-                    showStatus('Enviando datos al servidor...', 'warning');
-                    
-                    // En una implementación real, aquí harías una petición fetch a tu servidor
-                    setTimeout(() => {
-                        showStatus('Datos guardados en el servidor correctamente', 'success');
-                    }, 1500);
-                    
-                } catch (error) {
-                    console.error('Error al guardar en servidor:', error);
-                    showStatus('Error al guardar en el servidor', 'error');
-                }
-            }
+
             
             // Función para mostrar estado
             function showStatus(message, type) {
-                saveStatus.innerHTML = `<div class="status-message ${type}">${message}</div>`;
+                predictionText.textContent = message;
                 
-                // Limpiar después de 5 segundos
+                // Limpiar después de 3 segundos
                 setTimeout(() => {
-                    saveStatus.innerHTML = '';
-                }, 5000);
+                    predictionText.textContent = 'Listo para usar';
+                }, 3000);
             }
 
             // Funciones para botones de entrenamiento rápido
-            function train() {
-                const labelInput = document.getElementById('exampleLabel');
-                if (labelInput && labelInput.value.trim()) {
-                    // Simular click en el botón de entrenamiento principal
-                    const trainBtn = document.getElementById('trainBtn');
-                    if (trainBtn && !trainBtn.disabled) {
-                        trainBtn.click();
-                    } else {
-                        showStatus('Primero inicia la cámara y captura una seña', 'warning');
-                    }
+            window.train = function() {
+                const className = prompt('Ingresa el nombre de la seña (ej: Hola, Gracias, Por favor):');
+                if (className && className.trim() && isModelReady && isVideoReady) {
+                    addExample(className.trim());
+                    examplesAdded++;
+                    predictionText.textContent = `Ejemplo "${className}" agregado. Total: ${examplesAdded}`;
+                } else if (!className || !className.trim()) {
+                    predictionText.textContent = 'Por favor ingresa un nombre para la seña';
                 } else {
-                    showStatus('Por favor ingresa una etiqueta para el ejemplo', 'warning');
+                    predictionText.textContent = 'Espera a que el modelo y la cámara estén listos';
                 }
             }
 
-            function save() {
-                // Activar el guardado local
-                const saveLocalBtn = document.getElementById('saveLocalBtn');
-                if (saveLocalBtn && !saveLocalBtn.disabled) {
-                    saveLocalBtn.click();
+            window.save = function() {
+                if (examplesAdded > 0) {
+                    saveTrainingDataLocal();
                 } else {
-                    showStatus('No hay datos para guardar. Primero entrena el modelo.', 'warning');
+                    predictionText.textContent = 'No hay datos para guardar. Primero entrena el modelo.';
                 }
             }
 
-            function load() {
-                // Activar la carga de datos locales
-                const loadBtn = document.getElementById('loadLocalBtn');
-                if (loadBtn) {
-                    loadBtn.click();
-                } else {
-                    showStatus('Función de carga no disponible', 'warning');
-                }
+            window.load = function() {
+                loadTrainingDataLocal();
             }
         });
     </script>

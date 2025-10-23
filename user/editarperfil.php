@@ -13,14 +13,14 @@ include "../conexion.php"; // ensure DB connection
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Perfil Usuario</title>
-  <link rel="icon" href="../assets/images/favisena.png" type="image/x-icon">
+  <link rel="icon" href="../admin/assets/images/favisena.png" type="image/x-icon">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
-<link rel="stylesheet" href="../assets/fonts/tabler-icons.min.css" >
-<link rel="stylesheet" href="../assets/fonts/feather.css" >
-<link rel="stylesheet" href="../assets/fonts/fontawesome.css" >
-<link rel="stylesheet" href="../assets/fonts/material.css" >
-<link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" >
-<link rel="stylesheet" href="../assets/css/style-preset.css" >
+  <link rel="stylesheet" href="../admin/assets/fonts/tabler-icons.min.css" >
+  <link rel="stylesheet" href="../admin/assets/fonts/feather.css" >
+  <link rel="stylesheet" href="../admin/assets/fonts/fontawesome.css" >
+  <link rel="stylesheet" href="../admin/assets/fonts/material.css" >
+  <link rel="stylesheet" href="../admin/assets/css/style.css" id="main-style-link" >
+  <link rel="stylesheet" href="../admin/assets/css/style-preset.css" >
   <style>
     body {font-family: Arial, sans-serif;background: #f8f9fb;margin: 0;padding: 0;}
     .profile-container {display: flex;max-width: 1000px;margin: 40px auto;background: #fff;border-radius: 10px;overflow: hidden;box-shadow: 0px 4px 10px rgba(0,0,0,0.1);}
@@ -42,7 +42,7 @@ include "../conexion.php"; // ensure DB connection
   <div class="profile-container">
     <!-- Perfil -->
     <div class="profile-sidebar">
-      <img id="profileImage" src="../assets/images/user/avatar-2.jpg" alt="user-image">
+      <img id="profileImage" src="../admin/assets/images/user/avatar-2.jpg" alt="user-image">
       <h2><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : (isset($_SESSION['primer_nombre']) ? $_SESSION['primer_nombre'] : 'Usuario')); ?></h2>
     <p><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : (isset($_SESSION['primer_nombre']) ? $_SESSION['primer_nombre'] : 'Usuario')); ?></p>
       <button class="btn-change" onclick="document.getElementById('fileInput').click();">Cambiar Imagen</button>
@@ -84,6 +84,7 @@ include "../conexion.php"; // ensure DB connection
   <input type="hidden" name="id_rol" value="2">
   <br>
   <button type="submit" class="btn-ir">Guardar cambios</button>
+  <a href="index.php" class="btn-ir" style="background:#17a2b8; margin-left: 10px;">Volver al Inicio</a>
       </form>
     </div>
     <div style="text-align:center; margin-top:20px;">

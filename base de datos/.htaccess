@@ -1,0 +1,3 @@
+# Proteger acceso al directorio de base de datos
+Order Deny,Allow
+Deny from all

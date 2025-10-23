@@ -5,18 +5,40 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
+// Verificar si el usuario está logueado
+if (empty($_SESSION['txtdoc'])) {
+    header('Location: ../../login.php');
+    exit();
+}
+
+// Verificar si necesita cambiar contraseña ANTES de mostrar el dashboard
+if (!empty($_SESSION['force_pw_change'])) {
+    header('Location: change_password.php');
+    exit();
+}
+
 include '../../conexion.php';
-$nombre = '';
-if (!empty($_SESSION['txtdoc'])) {
-  $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
-  $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
-  if ($row = mysqli_fetch_assoc($res)) {
+
+// Verificar en la base de datos si necesita cambio de contraseña
+$doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
+$res = mysqli_query($conexion, "SELECT p_nombre, needs_pw_change FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
+if ($row = mysqli_fetch_assoc($res)) {
     $nombre = $row['p_nombre'];
-  } else {
-    $nombre = 'Usuario';
-  }
+    // Si la base de datos indica que necesita cambio, redirigir
+    if (!empty($row['needs_pw_change']) && $row['needs_pw_change'] == 1) {
+        $_SESSION['force_pw_change'] = true;
+        header('Location: change_password.php');
+        exit();
+    }
 } else {
-  $nombre = 'Usuario';
+    // Usuario no encontrado, redirigir al login
+    session_destroy();
+    header('Location: ../../login.php');
+    exit();
+}
+
+if (empty($nombre)) {
+    $nombre = 'Usuario';
 }
 ?>
 <!DOCTYPE html>
@@ -89,6 +111,12 @@ if (!empty($_SESSION['txtdoc'])) {
               <span class="pc-mtext">Chats</span>
             </a>
           </li>
+          <li class="pc-item">
+            <a href="../../IA/index.html" class="pc-link" target="_blank">
+              <span class="pc-micon"><i class="ti ti-robot"></i></span>
+              <span class="pc-mtext">Sistema IA</span>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -153,6 +181,29 @@ if (!empty($_SESSION['txtdoc'])) {
         </div>
       </div>
       <h1>Bienvenido al Sistema</h1>
+      
+      <!-- Botones de Acceso Rápido -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <i class="ti ti-robot me-2"></i>Acceso Rápido - Sistema de IA
+              </h5>
+              <p class="card-text text-muted">
+                Accede al sistema de inteligencia artificial para traducción de lenguaje de señas
+              </p>
+              <a href="../../IA/index.html" class="btn btn-primary btn-lg">
+                <i class="ti ti-brain me-2"></i>Abrir Sistema de IA
+              </a>
+              <a href="../../IA/" class="btn btn-outline-secondary ms-2">
+                <i class="ti ti-folder me-2"></i>Ver Archivos IA
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <br><br>
       <!-- Carrusel -->
       <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">

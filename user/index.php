@@ -1,17 +1,40 @@
 <?php
 require_once __DIR__ . '/../includes/session.php';
+
+// Verificar si el usuario está logueado
+if (empty($_SESSION['txtdoc'])) {
+    header('Location: ../login.php');
+    exit();
+}
+
+// Verificar si necesita cambiar contraseña ANTES de mostrar el dashboard
+if (!empty($_SESSION['force_pw_change'])) {
+    header('Location: ../admin/dashboard/change_password.php');
+    exit();
+}
+
 include '../conexion.php';
-$nombre = '';
-if (!empty($_SESSION['txtdoc'])) {
-  $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
-  $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
-  if ($row = mysqli_fetch_assoc($res)) {
+
+// Verificar en la base de datos si necesita cambio de contraseña
+$doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
+$res = mysqli_query($conexion, "SELECT p_nombre, needs_pw_change FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
+if ($row = mysqli_fetch_assoc($res)) {
     $nombre = $row['p_nombre'];
-  } else {
-    $nombre = 'Usuario';
-  }
+    // Si la base de datos indica que necesita cambio, redirigir
+    if (!empty($row['needs_pw_change']) && $row['needs_pw_change'] == 1) {
+        $_SESSION['force_pw_change'] = true;
+        header('Location: ../admin/dashboard/change_password.php');
+        exit();
+    }
 } else {
-  $nombre = 'Usuario';
+    // Usuario no encontrado, redirigir al login
+    session_destroy();
+    header('Location: ../login.php');
+    exit();
+}
+
+if (empty($nombre)) {
+    $nombre = 'Usuario';
 }
 ?>
 <!DOCTYPE html>
@@ -128,6 +151,10 @@ if (!empty($_SESSION['txtdoc'])) {
                     <i class="ti ti-edit-circle"></i>
                     <span>Editar Perfil</span>
                   </a>
+                  <a href="user-profile.php" class="dropdown-item">
+                    <i class="ti ti-user"></i>
+                    <span>Ver Perfil</span>
+                  </a>
                   <a href="logout.php" class="dropdown-item">
                     <i class="ti ti-power"></i>
                     <span>Salir</span>
@@ -136,11 +163,11 @@ if (!empty($_SESSION['txtdoc'])) {
                 <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
                   <a href="#" class="dropdown-item">
                     <i class="ti ti-help"></i>
-                    <span>Support</span>
+                    <span>Soporte</span>
                   </a>
-                  <a href="#" class="dropdown-item">
+                  <a href="account-profile.php" class="dropdown-item">
                     <i class="ti ti-user"></i>
-                    <span>Account Settings</span>
+                    <span>Configuración de Cuenta</span>
                   </a>
                   <a href="#" class="dropdown-item">
                     <i class="ti ti-messages"></i>
@@ -367,14 +394,12 @@ if (!empty($_SESSION['txtdoc'])) {
       </footer>
     </div>
   </div>
-  <script src="../assets/js/plugins/apexcharts.min.js"></script>
-  <script src="../assets/js/pages/dashboard-default.js"></script>
-  <script src="../assets/js/plugins/popper.min.js"></script>
-  <script src="../assets/js/plugins/simplebar.min.js"></script>
-  <script src="../js/bootstrap.min.js"></script>
-  <script src="../assets/js/fonts/custom-font.js"></script>
-  <script src="../assets/js/pcoded.js"></script>
-  <script src="../assets/js/plugins/feather.min.js"></script>
+  <script src="../admin/assets/js/plugins/popper.min.js"></script>
+  <script src="../admin/assets/js/plugins/simplebar.min.js"></script>
+  <script src="../admin/assets/js/plugins/bootstrap.min.js"></script>
+  <script src="../admin/assets/js/fonts/custom-font.js"></script>
+  <script src="../admin/assets/js/pcoded.js"></script>
+  <script src="../admin/assets/js/plugins/feather.min.js"></script>
   <script>layout_change('light');</script>
   <script>change_box_container('false');</script>
   <script>layout_rtl_change('false');</script>

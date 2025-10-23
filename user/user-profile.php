@@ -52,7 +52,7 @@ if (file_exists($sessionInclude)) {
 <nav class="pc-sidebar">
   <div class="navbar-wrapper">
     <div class="m-header">
-      <a href="../dashboard/index.php" class="b-brand text-primary">
+      <a href="index.php" class="b-brand text-primary">
         <!-- ========   Change your logo from here   ============ -->
         <img src="../admin/assets/images/logoensename.png" class="img-fluid" alt="">
       </a>
@@ -60,31 +60,25 @@ if (file_exists($sessionInclude)) {
     <div class="navbar-content">
     <ul class="pc-navbar">
   <li class="pc-item">
-    <a href="../dashboard/index.php" class="pc-link">
+    <a href="index.php" class="pc-link">
       <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
       <span class="pc-mtext">Inicio</span>
     </a>
   </li>     
   
   <li class="pc-item">
-    <a href="http://localhost/ense%C3%B1ame/admin/application/usuarios.php" class="pc-link">
-      <span class="pc-micon"><i class="ti ti-users"></i></span>
-      <span class="pc-mtext">Usuarios</span>
+    <a href="producto.php" class="pc-link">
+      <span class="pc-micon"><i class="ti ti-book"></i></span>
+      <span class="pc-mtext">Guias</span>
     </a>
   </li>
 
   <li class="pc-item">
-      <a href="../application/user-list.html" class="pc-link">
-        <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
-        <span class="pc-mtext">Producto</span>
+      <a href="servicio.php" class="pc-link">
+        <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
+        <span class="pc-mtext">Chats</span>
       </a>
   </li>
-  <li class="pc-item">
-          <a href="../application/servicio.php" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-brand-chrome"></i></span>
-            <span class="pc-mtext">Servicio</span>
-          </a>
-        </li>
 </ul>
 
     </div>
@@ -241,7 +235,7 @@ if (file_exists($sessionInclude)) {
           <div class="row align-items-center">
             <div class="col-md-12">
               <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../dashboard/index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                 <li class="breadcrumb-item"><a href="javascript: void(0)">Users</a></li>
                 <li class="breadcrumb-item" aria-current="page">User Profile</li>
               </ul>
@@ -279,7 +273,7 @@ if (file_exists($sessionInclude)) {
                             $segundoApellido = $_POST["segundoApellido"];
                           }
                           ?>
-                        <form action="http://localhost/enseñame/admin/dashboard/index.php" method="post"></form>
+                        <form action="../admin/dashboard/index.php" method="post"></form>
                         </div>
                         <div class="col-sm-4">
                           <div class="form-group">
@@ -445,7 +439,7 @@ if (file_exists($sessionInclude)) {
   </footer> <!-- Required Js -->
 <script src="../admin/assets/js/plugins/popper.min.js"></script>
 <script src="../admin/assets/js/plugins/simplebar.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
+<script src="../admin/assets/js/plugins/bootstrap.min.js"></script>
 <script src="../admin/assets/js/fonts/custom-font.js"></script>
 <script src="../admin/assets/js/pcoded.js"></script>
 <script src="../admin/assets/js/plugins/feather.min.js"></script>

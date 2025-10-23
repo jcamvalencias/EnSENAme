@@ -58,7 +58,7 @@
   </li>     
   
   <li class="pc-item">
-    <a href="http://localhost/ense%C3%B1ame/admin/application/usuarios.php" class="pc-link">
+    <a href="../admin/application/usuarios.php" class="pc-link">
       <span class="pc-micon"><i class="ti ti-users"></i></span>
       <span class="pc-mtext">Usuarios</span>
     </a>
@@ -270,7 +270,7 @@
                             $segundoApellido = $_POST["segundoApellido"];
                           }
                           ?>
-                        <form action="http://localhost/enseñame/admin/dashboard/index.php" method="post"></form>
+                        <form action="../admin/dashboard/index.php" method="post"></form>
                         </div>
                         <div class="col-sm-4">
                           <div class="form-group">
@@ -360,15 +360,30 @@
                         <div class="col-lg-6">
                           <div class="form-group">
                             <label class="form-label">Old Password</label>
-                            <input type="password" class="form-control">
+                            <div class="input-group">
+                              <input type="password" class="form-control" id="oldPasswordProfile">
+                              <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('oldPasswordProfile', this)">
+                                <i class="ti ti-eye"></i>
+                              </button>
+                            </div>
                           </div>
                           <div class="form-group">
                             <label class="form-label">New Password</label>
-                            <input type="password" class="form-control">
+                            <div class="input-group">
+                              <input type="password" class="form-control" id="newPasswordProfile">
+                              <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('newPasswordProfile', this)">
+                                <i class="ti ti-eye"></i>
+                              </button>
+                            </div>
                           </div>
                           <div class="form-group">
                             <label class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control">
+                            <div class="input-group">
+                              <input type="password" class="form-control" id="confirmPasswordProfile">
+                              <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('confirmPasswordProfile', this)">
+                                <i class="ti ti-eye"></i>
+                              </button>
+                            </div>
                           </div>
                         </div>
                         <div class="col-lg-6">
@@ -703,6 +718,22 @@
       </div>
     </div>
   </div>
+  
+  <script>
+    // Funcionalidad para mostrar/ocultar contraseñas
+    function togglePasswordVisibility(inputId, button) {
+      const input = document.getElementById(inputId);
+      const icon = button.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'ti ti-eye-off';
+      } else {
+        input.type = 'password';
+        icon.className = 'ti ti-eye';
+      }
+    }
+  </script>
 </body>
 <!-- [Body] end -->
 

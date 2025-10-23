@@ -123,7 +123,7 @@ if (!empty($_SESSION['txtdoc'])) {
         data-bs-auto-close="outside"
         aria-expanded="false"
       >
-          <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+                  <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
           <span><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></span>
       </a>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">

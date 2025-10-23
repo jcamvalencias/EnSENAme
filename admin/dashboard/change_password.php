@@ -67,13 +67,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           // Eliminar flag forzado
           unset($_SESSION['force_pw_change']);
                     // Redirigir según rol: 1 => admin, 2 => user
-                    // Use absolute paths to avoid relative path mistakes on the server.
-                    $base = '/enseñame/EnSENAme';
-                    $target = $base . '/admin/dashboard/index.php';
                     if (!empty($_SESSION['id_rol']) && intval($_SESSION['id_rol']) === 2) {
-                      $target = $base . '/user/index.php';
+                      header('Location: ../../user/index.php');
+                    } else {
+                      header('Location: index.php');
                     }
-                    header('Location: ' . $target);
                     exit();
         } else {
                     $message = 'Error al actualizar la contraseña.';
@@ -92,13 +90,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
   <title>Cambiar contraseña - EnSEÑAme</title>
-  <link rel="icon" href="../../admin/assets/images/favisena.png" type="image/x-icon">
-  <link rel="stylesheet" href="../../admin/assets/fonts/tabler-icons.min.css" >
-  <link rel="stylesheet" href="../../admin/assets/fonts/feather.css" >
-  <link rel="stylesheet" href="../../admin/assets/fonts/fontawesome.css" >
-  <link rel="stylesheet" href="../../admin/assets/fonts/material.css" >
-  <link rel="stylesheet" href="../../admin/assets/css/style.css" id="main-style-link" >
-  <link rel="stylesheet" href="../../admin/assets/css/style-preset.css" >
+  <link rel="icon" href="../assets/images/favisena.png" type="image/x-icon">
+  <link rel="stylesheet" href="../assets/fonts/tabler-icons.min.css" >
+  <link rel="stylesheet" href="../assets/fonts/feather.css" >
+  <link rel="stylesheet" href="../assets/fonts/fontawesome.css" >
+  <link rel="stylesheet" href="../assets/fonts/material.css" >
+  <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" >
+  <link rel="stylesheet" href="../assets/css/style-preset.css" >
 </head>
 <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
   <div class="pc-container">
@@ -106,18 +104,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="card">
         <div class="card-body">
           <h2 class="mb-3">Cambiar contraseña</h2>
-          <p class="text-warning fw-bold">Tu contraseña necesita ser cambiada</p>
+          <?php if (!empty($_SESSION['force_pw_change'])): ?>
+            <div class="alert alert-warning">
+              <i class="ti ti-alert-triangle me-2"></i>
+              <strong>Cambio de contraseña requerido</strong><br>
+              Tu contraseña actual no cumple con las políticas de seguridad actuales. 
+              Debes cambiarla antes de continuar.
+            </div>
+          <?php else: ?>
+            <p class="text-info">
+              <i class="ti ti-info-circle me-2"></i>
+              Cambio de contraseña voluntario
+            </p>
+          <?php endif; ?>
+          
           <?php if (!empty($message)): ?>
-            <div class="alert alert-danger"><?php echo htmlspecialchars($message); ?></div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="ti ti-alert-circle me-2"></i>
+              <?php echo htmlspecialchars($message); ?>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
           <?php endif; ?>
           <form method="post">
             <div class="mb-3">
               <label for="current_password">Contraseña actual</label>
-              <input type="password" id="current_password" name="current_password" class="form-control" required>
+              <div class="input-group">
+                <input type="password" id="current_password" name="current_password" class="form-control" required>
+                <button class="btn btn-outline-secondary" type="button" id="toggleCurrentPassword">
+                  <i class="ti ti-eye" id="eyeIconCurrent"></i>
+                </button>
+              </div>
             </div>
             <div class="mb-3">
               <label for="new_password">Nueva contraseña</label>
-              <input type="password" id="new_password" name="new_password" class="form-control" required>
+              <div class="input-group">
+                <input type="password" id="new_password" name="new_password" class="form-control" required>
+                <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword">
+                  <i class="ti ti-eye" id="eyeIconNew"></i>
+                </button>
+              </div>
               <small class="form-text text-muted">La contraseña debe tener al menos 10 caracteres e incluir mayúsculas, minúsculas, números y un símbolo.</small>
               <ul id="pw-requirements" class="small mt-2">
                 <li id="req-length" class="text-muted">Mínimo 10 caracteres</li>
@@ -129,7 +154,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="mb-3">
               <label for="new_password_confirm">Confirmar nueva contraseña</label>
-              <input type="password" id="new_password_confirm" name="new_password_confirm" class="form-control" required>
+              <div class="input-group">
+                <input type="password" id="new_password_confirm" name="new_password_confirm" class="form-control" required>
+                <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                  <i class="ti ti-eye" id="eyeIconConfirm"></i>
+                </button>
+              </div>
               <small id="match-status" class="form-text text-muted">Las contraseñas deben coincidir.</small>
             </div>
             <div class="mb-3">
@@ -140,15 +170,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     </div>
   </div>
-  <script src="../../admin/assets/js/plugins/popper.min.js"></script>
-  <script src="../../admin/assets/js/plugins/simplebar.min.js"></script>
-  <script src="../../admin/assets/js/plugins/bootstrap.min.js"></script>
-  <script src="../../admin/assets/js/fonts/custom-font.js"></script>
-  <script src="../../admin/assets/js/pcoded.js"></script>
-  <script src="../../admin/assets/js/plugins/feather.min.js"></script>
+  <script src="../assets/js/plugins/popper.min.js"></script>
+  <script src="../assets/js/plugins/simplebar.min.js"></script>
+  <script src="../assets/js/plugins/bootstrap.min.js"></script>
+  <script src="../assets/js/fonts/custom-font.js"></script>
+  <script src="../assets/js/pcoded.js"></script>
+  <script src="../assets/js/plugins/feather.min.js"></script>
   <script>layout_change('light');</script>
   <script>change_box_container('false');</script>
   <script>
+    // Funcionalidad para mostrar/ocultar contraseñas
+    document.addEventListener('DOMContentLoaded', function() {
+      // Toggle para contraseña actual
+      const toggleCurrentPassword = document.getElementById('toggleCurrentPassword');
+      const currentPasswordInput = document.getElementById('current_password');
+      const eyeIconCurrent = document.getElementById('eyeIconCurrent');
+      
+      if (toggleCurrentPassword && currentPasswordInput && eyeIconCurrent) {
+        toggleCurrentPassword.addEventListener('click', function() {
+          const type = currentPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          currentPasswordInput.setAttribute('type', type);
+          
+          if (type === 'text') {
+            eyeIconCurrent.className = 'ti ti-eye-off';
+          } else {
+            eyeIconCurrent.className = 'ti ti-eye';
+          }
+        });
+      }
+      
+      // Toggle para nueva contraseña
+      const toggleNewPassword = document.getElementById('toggleNewPassword');
+      const newPasswordInput = document.getElementById('new_password');
+      const eyeIconNew = document.getElementById('eyeIconNew');
+      
+      if (toggleNewPassword && newPasswordInput && eyeIconNew) {
+        toggleNewPassword.addEventListener('click', function() {
+          const type = newPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          newPasswordInput.setAttribute('type', type);
+          
+          if (type === 'text') {
+            eyeIconNew.className = 'ti ti-eye-off';
+          } else {
+            eyeIconNew.className = 'ti ti-eye';
+          }
+        });
+      }
+      
+      // Toggle para confirmar contraseña
+      const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+      const confirmPasswordInput = document.getElementById('new_password_confirm');
+      const eyeIconConfirm = document.getElementById('eyeIconConfirm');
+      
+      if (toggleConfirmPassword && confirmPasswordInput && eyeIconConfirm) {
+        toggleConfirmPassword.addEventListener('click', function() {
+          const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          confirmPasswordInput.setAttribute('type', type);
+          
+          if (type === 'text') {
+            eyeIconConfirm.className = 'ti ti-eye-off';
+          } else {
+            eyeIconConfirm.className = 'ti ti-eye';
+          }
+        });
+      }
+    });
+    
     (function(){
       const pw = document.getElementById('new_password');
       const pw2 = document.getElementById('new_password_confirm');

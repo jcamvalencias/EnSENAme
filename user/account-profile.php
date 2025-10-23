@@ -1267,15 +1267,30 @@ if (file_exists($sessionInclude)) {
                         <div class="col-sm-6">
                           <div class="form-group">
                             <label class="form-label">Old Password</label>
-                            <input type="password" class="form-control">
+                            <div class="input-group">
+                              <input type="password" class="form-control" id="oldPasswordUser">
+                              <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('oldPasswordUser', this)">
+                                <i class="ti ti-eye"></i>
+                              </button>
+                            </div>
                           </div>
                           <div class="form-group">
                             <label class="form-label">New Password</label>
-                            <input type="password" class="form-control">
+                            <div class="input-group">
+                              <input type="password" class="form-control" id="newPasswordUser">
+                              <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('newPasswordUser', this)">
+                                <i class="ti ti-eye"></i>
+                              </button>
+                            </div>
                           </div>
                           <div class="form-group">
                             <label class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control">
+                            <div class="input-group">
+                              <input type="password" class="form-control" id="confirmPasswordUser">
+                              <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('confirmPasswordUser', this)">
+                                <i class="ti ti-eye"></i>
+                              </button>
+                            </div>
                           </div>
                         </div>
                         <div class="col-sm-6">
@@ -1680,12 +1695,12 @@ if (file_exists($sessionInclude)) {
       </div>
     </div>
   </footer> <!-- Required Js -->
-<script src="../assets/js/plugins/popper.min.js"></script>
-<script src="../assets/js/plugins/simplebar.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../assets/js/fonts/custom-font.js"></script>
-<script src="../assets/js/pcoded.js"></script>
-<script src="../assets/js/plugins/feather.min.js"></script>
+<script src="../admin/assets/js/plugins/popper.min.js"></script>
+<script src="../admin/assets/js/plugins/simplebar.min.js"></script>
+<script src="../admin/assets/js/plugins/bootstrap.min.js"></script>
+<script src="../admin/assets/js/fonts/custom-font.js"></script>
+<script src="../admin/assets/js/pcoded.js"></script>
+<script src="../admin/assets/js/plugins/feather.min.js"></script>
 
 
 
@@ -1707,6 +1722,21 @@ if (file_exists($sessionInclude)) {
 
 
 <script>font_change("Public-Sans");</script>
+
+<script>
+function togglePasswordVisibility(fieldId, button) {
+    const field = document.getElementById(fieldId);
+    const icon = button.querySelector('i');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.className = 'ti ti-eye-off';
+    } else {
+        field.type = 'password';
+        icon.className = 'ti ti-eye';
+    }
+}
+</script>
 
     
 

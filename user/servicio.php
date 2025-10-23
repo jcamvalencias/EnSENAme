@@ -87,7 +87,7 @@ if (!empty($_SESSION['txtdoc'])) {
       <ul class="list-unstyled">
         <li class="dropdown pc-h-item header-user-profile">
           <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
-            <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+            <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
           <span><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></span>
           </a>
           <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
@@ -116,11 +116,11 @@ if (!empty($_SESSION['txtdoc'])) {
                   <i class="ti ti-edit-circle"></i>
                   <span>Editar Perfil</span>
                 </a>
-                <a href="#" class="dropdown-item">
+                <a href="user-profile.php" class="dropdown-item">
                   <i class="ti ti-user"></i>
                   <span>Ver Perfil</span>
                 </a>
-                <a href="#" class="dropdown-item">
+                <a href="logout.php" class="dropdown-item">
                   <i class="ti ti-power"></i>
                   <span>Salir</span>
                 </a>
@@ -128,11 +128,17 @@ if (!empty($_SESSION['txtdoc'])) {
               <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
                 <a href="#" class="dropdown-item">
                   <i class="ti ti-help"></i>
-                  <span>Support</span>
+                  <span>Soporte</span>
+                </a>
+                <a href="account-profile.php" class="dropdown-item">
+                  <i class="ti ti-user"></i>
+                  <span>Configuración de Cuenta</span>
                 </a>
                 <a href="#" class="dropdown-item">
-                  <i class="ti ti-user"></i>
-                  <span>Account Settings</span>
+                  <i class="ti ti-messages"></i>
+                  <span>Feedback</span>
+                </a>
+              </div>
                 </a>
                 <a href="#" class="dropdown-item">
                   <i class="ti ti-messages"></i>

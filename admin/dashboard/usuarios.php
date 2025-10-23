@@ -380,8 +380,8 @@ $result = mysqli_query($conexion, $query);
               </td>
               <td><?= $rol ?></td>
               <td>
-                <a href="/enseñame/EnSENAme/admin/dashboard/editar.php?id=<?= $id ?>" class="btn btn-warning btn-sm">Editar</a>
-                <a href="/enseñame/EnSENAme/admin/dashboard/eliminar.php?id=<?= $id ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</a>
+                <a href="editar.php?id=<?= $id ?>" class="btn btn-warning btn-sm">Editar</a>
+                <a href="eliminar.php?id=<?= $id ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</a>
                 <?php if ($needs): ?>
                   <form method="post" style="display:inline">
                     <input type="hidden" name="user_id" value="<?= $id ?>">

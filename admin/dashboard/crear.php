@@ -270,7 +270,7 @@ $nombre = '';
       <!-- [ breadcrumb ] end -->
       <!-- [ Main Content ] start -->  
       <h1>Bienvenido al Sistema</h1>
-      <a href="http://localhost/ense%C3%B1ame/admin/dashboard/index.php">Inicio</a>|<a href="usuarios.php"> Usuario</a> |
+      <a href="index.php">Inicio</a>|<a href="usuarios.php"> Usuario</a> |
       <a href="../application/user-list.html">Producto</a> | <a href="../application/servicio.php">Servicio</a>   
         <!-- [ sample-page ] start -->
         <div class="container mt-5">
