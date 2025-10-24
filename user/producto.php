@@ -57,7 +57,7 @@ if (empty($nombre_completo)) {
   <div class="navbar-wrapper">
     <div class="m-header">
       <a href="index.php" class="b-brand text-primary">
-        <img src="../admin/assets/images/logoensename.PNG" class="img-fluid" alt="">
+        <img src="../admin/assets/images/logoensenamenobg.png" alt="EnSEÑAme Logo" class="img-fluid" />
       </a>
     </div>
     <div class="navbar-content">

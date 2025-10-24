@@ -72,9 +72,9 @@ RewriteEngine On
 </IfModule>
 
 # Página de error personalizada
-ErrorDocument 404 /error.php
-ErrorDocument 403 /error.php
-ErrorDocument 500 /error.php
+ErrorDocument 404 /enseñame/enSENAme/EnSENAme/error.php
+ErrorDocument 403 /enseñame/enSENAme/EnSENAme/error.php
+ErrorDocument 500 /enseñame/enSENAme/EnSENAme/error.php
 
 # Configuración de PHP (si está disponible)
 <IfModule mod_php.c>

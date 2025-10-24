@@ -1,3 +1,7 @@
+<?php
+// Incluir conexión
+include_once "conexion.php";
+
 // Obtener lista de usuarios (ID y nombre)
 function obtenerUsuarios() {
     global $conexion;
@@ -21,9 +25,6 @@ function puedeEnviarMensaje($de) {
     }
     return true;
 }
-// --- CHAT PRIVADO ENTRE USUARIOS ---
-// Requiere la tabla tb_mensajes (ver instrucciones abajo)
-include_once "conexion.php";
 
 // Guardar mensaje privado
 function guardarMensaje($de, $para, $mensaje) {
@@ -74,22 +75,8 @@ function obtenerMensajes($de, $para) {
     return $mensajes;
 }
 
-// --- INSTRUCCIONES PARA CREAR LA TABLA EN TU LOCALHOST ---
-// Ejecuta este SQL en phpMyAdmin o consola MySQL:
-/*
-CREATE TABLE tb_mensajes (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  de_usuario INT NOT NULL,
-  para_usuario INT NOT NULL,
-  mensaje TEXT NOT NULL,
-  fecha DATETIME NOT NULL,
-  FOREIGN KEY (de_usuario) REFERENCES tb_usuarios(ID),
-  FOREIGN KEY (para_usuario) REFERENCES tb_usuarios(ID)
-);
-*/
-<?php
+// Solo procesar registro si se envió el formulario
 if(isset($_POST["btn_registrar"])){
-    include "conexion.php";
     $clave=$_POST['clave'];
     $clave2=$_POST['confirmarClave'];
     if($clave==$clave2){
@@ -102,20 +89,17 @@ if(isset($_POST["btn_registrar"])){
         $segundoApellido = $_POST['segundoApellido'];
         $idrol = $_POST['idrol'];
 
-
         $registrar= mysqli_query($conexion,"INSERT INTO `tb_usuarios` (`ID`, `Tipo_Documento`, `p_nombre`, `s_nombre`, `p_apellido`, `s_apellido`, `Clave`, `id_rol`) 
         VALUES ('$numeroDocumento', '$tipoDocumento', '$primerNombre', '$segundoNombre', '$primerApellido', '$segundoApellido', '$pass', '$idrol');");
 
         if($registrar){
             echo "usuario registrado con exito";
             echo "<script>window.location='login.php';</script>";
-            
         }else{
             echo "error en registrar";
         }
+    } else {
+        echo "<script>alert('Las contraseñas no coinciden');</script>";
     }
-}else{
-    echo"<script>window.location='error.php'</script>";
-    echo "<script>alert('error')</script>";
 }
 ?>
