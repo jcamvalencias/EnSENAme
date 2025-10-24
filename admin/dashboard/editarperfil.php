@@ -10,6 +10,12 @@ $id_usuario = $_SESSION['id_usuario'];
 $sql = "SELECT * FROM tb_usuarios WHERE ID='$id_usuario'";
 $res = mysqli_query($conexion, $sql);
 $usuario = mysqli_fetch_assoc($res);
+
+// Determinar la ruta de la imagen de perfil
+$foto_perfil = $usuario['foto_perfil'] ?? '';
+$imagen_perfil = !empty($foto_perfil) && file_exists("../../uploads/profile_images/" . $foto_perfil) 
+  ? "../../uploads/profile_images/" . $foto_perfil 
+  : "../assets/images/user/avatar-2.jpg";
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -147,7 +153,7 @@ $usuario = mysqli_fetch_assoc($res);
   <div class="profile-container">
     <!-- Perfil -->
     <div class="profile-sidebar">
-      <img id="profileImage" src="../assets/images/user/avatar-2.jpg" alt="user-image">
+      <img id="profileImage" src="<?php echo htmlspecialchars($imagen_perfil); ?>" alt="user-image">
   <?php
     // Determine display name: prefer session display_name, else build from DB fields
     $displayName = '';
@@ -161,14 +167,15 @@ $usuario = mysqli_fetch_assoc($res);
   <h2><?php echo htmlspecialchars($displayName); ?></h2>
   <p><?php echo htmlspecialchars($displayName); ?></p>
       <button class="btn-change" onclick="document.getElementById('fileInput').click();">Cambiar Imagen</button>
-      <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
+      <input type="file" id="fileInput" name="foto_perfil" accept="image/*" onchange="previewImage(event)">
     </div>
 
     <!-- Formulario -->
     <div class="profile-form">
       <h3>Información Personal</h3>
       
-      <form method="post" action="editarperfil.php">
+      <form method="post" action="editarperfil.php" enctype="multipart/form-data">
+        <input type="hidden" name="foto_actual" value="<?php echo htmlspecialchars($usuario['foto_perfil'] ?? ''); ?>">
         <div class="form-group">
           <label for="tipo-doc">Tipo de Documento:</label>
           <select id="tipo-doc" name="tipo_doc" style="pointer-events: none; background: #f1f1f1; cursor: not-allowed;">
@@ -210,6 +217,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_usuario']) && $_PO
   $primer_apellido = mysqli_real_escape_string($conexion, $_POST['primer_apellido']);
   $segundo_apellido = mysqli_real_escape_string($conexion, $_POST['segundo_apellido']);
 
+  $foto_actual = $_POST['foto_actual'] ?? '';
+  $nueva_foto = $foto_actual; // Por defecto mantener la foto actual
+  
+  // Procesar subida de imagen si se seleccionó una
+  if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+    $archivo = $_FILES['foto_perfil'];
+    $nombre_original = $archivo['name'];
+    $extension = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
+    
+    // Validar tipo de archivo
+    $extensiones_permitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    if (in_array($extension, $extensiones_permitidas)) {
+      // Validar tamaño (máximo 5MB)
+      if ($archivo['size'] <= 5 * 1024 * 1024) {
+        // Generar nombre único para el archivo
+        $nombre_nuevo = $id_usuario . '_' . time() . '.' . $extension;
+        $ruta_destino = '../../uploads/profile_images/' . $nombre_nuevo;
+        
+        // Crear directorio si no existe
+        if (!file_exists('../../uploads/profile_images/')) {
+          mkdir('../../uploads/profile_images/', 0755, true);
+        }
+        
+        // Mover archivo subido
+        if (move_uploaded_file($archivo['tmp_name'], $ruta_destino)) {
+          // Eliminar foto anterior si existe
+          if (!empty($foto_actual) && file_exists('../../uploads/profile_images/' . $foto_actual)) {
+            unlink('../../uploads/profile_images/' . $foto_actual);
+          }
+          $nueva_foto = $nombre_nuevo;
+        } else {
+          echo '<script>alert("Error al subir la imagen");</script>';
+        }
+      } else {
+        echo '<script>alert("La imagen es demasiado grande. Máximo 5MB.");</script>';
+      }
+    } else {
+      echo '<script>alert("Formato de imagen no válido. Solo se permiten: JPG, JPEG, PNG, GIF, WEBP");</script>';
+    }
+  }
+
   // Comprobar si hay cambios reales
   $hay_cambios = (
     $tipo_doc != $usuario['Tipo_Documento'] ||
@@ -217,11 +265,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_usuario']) && $_PO
     $primer_nombre != $usuario['p_nombre'] ||
     $segundo_nombre != $usuario['s_nombre'] ||
     $primer_apellido != $usuario['p_apellido'] ||
-    $segundo_apellido != $usuario['s_apellido']
+    $segundo_apellido != $usuario['s_apellido'] ||
+    $nueva_foto != $foto_actual
   );
 
   if ($hay_cambios) {
-    $sql_update = "UPDATE tb_usuarios SET Tipo_Documento='$tipo_doc', ID='$num_doc', p_nombre='$primer_nombre', s_nombre='$segundo_nombre', p_apellido='$primer_apellido', s_apellido='$segundo_apellido' WHERE ID='$id_usuario'";
+    $sql_update = "UPDATE tb_usuarios SET Tipo_Documento='$tipo_doc', ID='$num_doc', p_nombre='$primer_nombre', s_nombre='$segundo_nombre', p_apellido='$primer_apellido', s_apellido='$segundo_apellido', foto_perfil='$nueva_foto' WHERE ID='$id_usuario'";
     if (mysqli_query($conexion, $sql_update)) {
       // Update session vars in multiple keys for compatibility
       $_SESSION['p_nombre'] = $primer_nombre;

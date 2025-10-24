@@ -1,11 +1,12 @@
 <?php
 // Incluir conexión
 include_once "conexion.php";
+include_once "includes/helpers.php";
 
 // Obtener lista de usuarios (ID y nombre)
 function obtenerUsuarios() {
     global $conexion;
-    $res = mysqli_query($conexion, "SELECT ID, p_nombre, p_apellido FROM tb_usuarios");
+    $res = mysqli_query($conexion, "SELECT ID, p_nombre, p_apellido, id_rol FROM tb_usuarios ORDER BY p_nombre ASC");
     $usuarios = [];
     while($row = mysqli_fetch_assoc($res)) {
         $usuarios[] = $row;

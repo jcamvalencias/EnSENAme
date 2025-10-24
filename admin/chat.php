@@ -8,7 +8,6 @@ if (empty($_SESSION['txtdoc'])) {
 }
 
 include '../conexion.php';
-include '../codigo.php';
 
 // Obtener información del usuario desde la base de datos
 $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
@@ -28,6 +27,27 @@ if (empty($nombre)) {
 }
 if (empty($nombre_completo)) {
     $nombre_completo = 'Usuario';
+}
+
+// Función para obtener lista de usuarios para el chat
+function obtenerUsuarios() {
+    global $conexion;
+    $usuarios = array();
+    
+    $query = "SELECT ID, p_nombre, s_nombre, p_apellido, s_apellido, id_rol 
+              FROM tb_usuarios 
+              WHERE id_rol IN (1, 2, 3) 
+              ORDER BY p_nombre ASC";
+    
+    $result = mysqli_query($conexion, $query);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $usuarios[] = $row;
+        }
+    }
+    
+    return $usuarios;
 }
 
 // Obtener lista de usuarios para el chat
@@ -168,39 +188,63 @@ $usuarios = obtenerUsuarios();
   <nav class="pc-sidebar">
     <div class="navbar-wrapper">
       <div class="m-header">
-        <a href="index.php" class="b-brand text-primary">
-          <img src="../assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo">
+        <a href="dashboard/index.php" class="b-brand text-primary">
+          <img src="../assets/images/logoensenamenobg.png" alt="EnSEÑAme Logo" class="img-fluid" width="175" height="32" />
         </a>
       </div>
       <div class="navbar-content">
         <ul class="pc-navbar">
           <li class="pc-item">
-            <a href="index.php" class="pc-link">
+            <a href="dashboard/index.php" class="pc-link">
               <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
-              <span class="pc-mtext">Dashboard</span>
-            </a>
-          </li>
-          <li class="pc-item">
-            <a href="usuarios.php" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-users"></i></span>
-              <span class="pc-mtext">Usuarios</span>
+              <span class="pc-mtext">Inicio</span>
             </a>
           </li>
           <li class="pc-item pc-hasmenu">
-            <a href="#!" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-brand-hipchat"></i></span>
-              <span class="pc-mtext">Chat</span>
-              <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+            <a href="javascript:void(0);" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-users"></i></span>
+              <span class="pc-mtext">Usuarios</span>
+              <span class="pc-arrow"><i class="ti ti-chevron-down"></i></span>
             </a>
-            <ul class="pc-submenu">
-              <li class="pc-item"><a class="pc-link active" href="chat.php">Mensajería</a></li>
-              <li class="pc-item"><a class="pc-link" href="chatbot_stats.php">Estadísticas Bot</a></li>
+            <ul class="pc-submenu" style="display: none;">
+              <li class="pc-item"><a href="dashboard/crear.php" class="pc-link"><span class="pc-mtext">Agregar usuario</span></a></li>
+              <li class="pc-item"><a href="dashboard/usuarios.php" class="pc-link"><span class="pc-mtext">Ver usuarios</span></a></li>
             </ul>
           </li>
           <li class="pc-item">
-            <a href="gestion.php" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-settings"></i></span>
-              <span class="pc-mtext">Gestión</span>
+            <a href="dashboard/producto.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-book"></i></span>
+              <span class="pc-mtext">Guías</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="dashboard/asistente_virtual.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-robot"></i></span>
+              <span class="pc-mtext">Asistente Virtual</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="chat.php" class="pc-link active">
+              <span class="pc-micon"><i class="ti ti-brand-hipchat"></i></span>
+              <span class="pc-mtext">Chat</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="dashboard/chatbot_stats.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-chart-line"></i></span>
+              <span class="pc-mtext">Estadísticas IA</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="dashboard/servicio.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-headset"></i></span>
+              <span class="pc-mtext">Servicios</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="../IA/index.html" class="pc-link" target="_blank">
+              <span class="pc-micon"><i class="ti ti-brain"></i></span>
+              <span class="pc-mtext">Sistema IA</span>
             </a>
           </li>
         </ul>
