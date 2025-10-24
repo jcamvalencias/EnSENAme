@@ -3,6 +3,9 @@
  * Funciones auxiliares para el sistema EnSEÑAme
  */
 
+// Evitar redeclaración de funciones
+if (!function_exists('obtenerFotoPerfil')) {
+
 /**
  * Obtiene la URL de la foto de perfil de un usuario
  * @param string $foto_perfil Nombre del archivo de foto desde la base de datos
@@ -20,6 +23,10 @@ function obtenerFotoPerfil($foto_perfil, $ruta_base = '') {
     return $imagen_default;
 }
 
+} // Fin guard obtenerFotoPerfil
+
+if (!function_exists('formatearNombreCompleto')) {
+
 /**
  * Formatea el nombre completo de un usuario
  * @param array $usuario Datos del usuario de la base de datos
@@ -35,6 +42,10 @@ function formatearNombreCompleto($usuario) {
     
     return implode(' ', $partes);
 }
+
+} // Fin guard formatearNombreCompleto
+
+if (!function_exists('validarImagenPerfil')) {
 
 /**
  * Valida si un archivo de imagen es válido
@@ -66,6 +77,10 @@ function validarImagenPerfil($archivo) {
     
     return ['valido' => true, 'mensaje' => 'Imagen válida.'];
 }
+
+} // Fin guard validarImagenPerfil
+
+if (!function_exists('guardarImagenPerfil')) {
 
 /**
  * Guarda una imagen de perfil
@@ -103,4 +118,6 @@ function guardarImagenPerfil($archivo, $user_id, $foto_anterior = '', $ruta_base
     
     return ['exito' => false, 'archivo' => '', 'mensaje' => 'Error al guardar la imagen.'];
 }
+
+} // Fin guard guardarImagenPerfil
 ?>

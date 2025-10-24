@@ -677,18 +677,21 @@ $nombre_admin = $admin['p_nombre'] . ' ' . $admin['p_apellido'];
             mostrarIndicadorEscritura();
             
             // Enviar al chatbot con modo admin
-            fetch('../../chatbot_api.php', {
+            fetch('../../chatbot_api_clean.php?ts=' + Date.now(), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     mensaje: mensaje,
-                    usuario_id: <?php echo $_SESSION['txtdoc']; ?>,
+                    usuario_id: <?php echo json_encode($_SESSION['txtdoc'] ?? 0); ?>,
                     es_admin: true
                 })
             })
-            .then(response => response.json())
+                        .then(async response => {
+                            const text = await response.text();
+                            try { return JSON.parse(text); } catch (e) { console.error('Respuesta no JSON:', text); throw e; }
+                        })
             .then(data => {
                 ocultarIndicadorEscritura();
                 

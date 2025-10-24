@@ -307,13 +307,13 @@ if (empty($nombre_completo)) {
           <li class="pc-item">
             <a href="chatbot.php" class="pc-link active">
               <span class="pc-micon"><i class="ti ti-robot"></i></span>
-              <span class="pc-mtext">Asistente Virtual</span>
+              <span class="pc-mtext">Asistente IA</span>
             </a>
           </li>
           <li class="pc-item">
             <a href="chat.php" class="pc-link">
               <span class="pc-micon"><i class="ti ti-brand-hipchat"></i></span>
-              <span class="pc-mtext">Chat</span>
+              <span class="pc-mtext">Chat Comunitario</span>
             </a>
           </li>
           <li class="pc-item">
@@ -424,7 +424,7 @@ if (empty($nombre_completo)) {
           <div class="row align-items-center">
             <div class="col-md-12">
               <div class="page-header-title">
-                <h2 class="mb-0">Asistente Virtual EnSEÑAme</h2>
+                <h2 class="mb-0">Asistente IA EnSEÑAme</h2>
               </div>
             </div>
           </div>
@@ -440,7 +440,7 @@ if (empty($nombre_completo)) {
             <div class="row align-items-center">
               <div class="col-md-8">
                 <h1>🤖 ¡Hola <?php echo htmlspecialchars($nombre); ?>!</h1>
-                <p>Soy tu asistente virtual especializado en sordera, LSC y la comunidad sorda. Estoy aquí para ayudarte a aprender y resolver tus dudas.</p>
+                <p>Soy tu asistente IA especializado en sordera, LSC y la comunidad sorda. Tengo conocimiento avanzado y puedo responder preguntas complejas sobre estos temas.</p>
               </div>
               <div class="col-md-4 text-center">
                 <div style="font-size: 5rem; opacity: 0.8;">
@@ -681,14 +681,14 @@ if (empty($nombre_completo)) {
       mostrarIndicadorEscritura();
       
       // Enviar al chatbot
-      fetch('../chatbot_api.php', {
+  fetch('../chatbot_api_clean.php?ts=' + Date.now(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           mensaje: mensaje,
-          usuario_id: <?php echo $_SESSION['txtdoc']; ?>
+          usuario_id: <?php echo json_encode($_SESSION['txtdoc'] ?? 0); ?>
         })
       })
       .then(response => response.json())
