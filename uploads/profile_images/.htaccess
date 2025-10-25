@@ -1,0 +1,17 @@
+# Permitir solo archivos de imagen
+<FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Denegar acceso a archivos PHP y otros scripts
+<FilesMatch "\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|sh|cgi)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Denegar acceso directo a la carpeta
+Options -Indexes
+
+# Limitar tamaño de archivo (5MB)
+LimitRequestBody 5242880

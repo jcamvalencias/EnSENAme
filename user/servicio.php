@@ -1,23 +1,11 @@
 <?php
 require_once __DIR__ . '/../includes/session.php';
 include '../conexion.php';
+
+// Obtener usuario actual
+$usuarioActual = $_SESSION['txtdoc'] ?? null;
 $nombre = '';
-if (!empty($_SESSION['txtdoc'])) {
-  $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
-  $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
-  if ($row = mysqli_fetch_assoc($res)) {
-    $nombre = $row['p_nombre'];
-  } else {
-    $nombre = 'Usuario';
-  }
-} else {
-  $nombre = 'Usuario';
-}
-if (session_status() !== PHP_SESSION_ACTIVE) {
-  session_start();
-}
-include '../conexion.php';
-$nombre = '';
+
 if (!empty($_SESSION['txtdoc'])) {
   $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
   $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
@@ -52,30 +40,42 @@ if (!empty($_SESSION['txtdoc'])) {
   <div class="navbar-wrapper">
     <div class="m-header">
       <a href="index.php" class="b-brand text-primary">
-        <img src="../admin/assets/images/logoensename.png" class="img-fluid" alt="">
+        <img src="../admin/assets/images/logoensenamenobg.png" alt="EnSEÑAme Logo" class="img-fluid" />
       </a>
     </div>
     <div class="navbar-content">
       <ul class="pc-navbar">
-        <li class="pc-item">
-          <a href="index.php" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
-            <span class="pc-mtext">Inicio</span>
-          </a>
-        </li>
-        <li class="pc-item">
-          <a href="producto.php" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-book"></i></span>
-            <span class="pc-mtext">Guias</span>
-          </a>
-        </li>
-        <li class="pc-item">
-          <a href="servicio.php" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
-            <span class="pc-mtext">Chats</span>
-          </a>
-        </li>
-      </ul>
+          <li class="pc-item">
+            <a href="index.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+              <span class="pc-mtext">Inicio</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="producto.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-book"></i></span>
+              <span class="pc-mtext">Guías LSC</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="chatbot.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-robot"></i></span>
+              <span class="pc-mtext">Asistente Virtual</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="chat.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-brand-hipchat"></i></span>
+              <span class="pc-mtext">Chat</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="servicio.php" class="pc-link active">
+              <span class="pc-micon"><i class="ti ti-headset"></i></span>
+              <span class="pc-mtext">Servicios</span>
+            </a>
+          </li>
+        </ul>
     </div>
   </div>
 </nav>
@@ -99,14 +99,14 @@ if (!empty($_SESSION['txtdoc'])) {
       <ul class="list-unstyled">
         <li class="dropdown pc-h-item header-user-profile">
           <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
-            <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+            <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
           <span><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></span>
           </a>
           <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
             <div class="dropdown-header">
               <div class="d-flex mb-1">
                 <div class="flex-shrink-0">
-                  <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
+                  <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
                 </div>
                 <div class="flex-grow-1 ms-3">
                   <h6 class="mb-1"><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></h6>
@@ -128,11 +128,11 @@ if (!empty($_SESSION['txtdoc'])) {
                   <i class="ti ti-edit-circle"></i>
                   <span>Editar Perfil</span>
                 </a>
-                <a href="#" class="dropdown-item">
+                <a href="user-profile.php" class="dropdown-item">
                   <i class="ti ti-user"></i>
                   <span>Ver Perfil</span>
                 </a>
-                <a href="#" class="dropdown-item">
+                <a href="logout.php" class="dropdown-item">
                   <i class="ti ti-power"></i>
                   <span>Salir</span>
                 </a>
@@ -140,11 +140,17 @@ if (!empty($_SESSION['txtdoc'])) {
               <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
                 <a href="#" class="dropdown-item">
                   <i class="ti ti-help"></i>
-                  <span>Support</span>
+                  <span>Soporte</span>
+                </a>
+                <a href="account-profile.php" class="dropdown-item">
+                  <i class="ti ti-user"></i>
+                  <span>Configuración de Cuenta</span>
                 </a>
                 <a href="#" class="dropdown-item">
-                  <i class="ti ti-user"></i>
-                  <span>Account Settings</span>
+                  <i class="ti ti-messages"></i>
+                  <span>Feedback</span>
+                </a>
+              </div>
                 </a>
                 <a href="#" class="dropdown-item">
                   <i class="ti ti-messages"></i>
@@ -256,43 +262,5 @@ if (!empty($_SESSION['txtdoc'])) {
   loadChat();
 </script>
 <script src="../admin/assets/js/plugins/bootstrap.min.js"></script>
-</body>
-</html>
-    });
-    box.scrollTop = box.scrollHeight;
-  }
-  document.getElementById("usuarioDestino").addEventListener("change", loadChat);
-  cargarUsuarios();
-  document.getElementById("chat-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    document.getElementById("errorSpam").style.display = "none";
-    const usuarioDestino = getUsuarioDestino();
-    if (!await validarUsuarioDestino(usuarioDestino)) {
-      document.getElementById("errorUsuario").style.display = "block";
-      document.getElementById("errorUsuario").textContent = "El usuario destino no existe.";
-      return;
-    }
-    const mensaje = document.getElementById("mensaje").value;
-    if (!mensaje.trim()) return;
-    const res = await fetch(`../../chat_api.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `para=${usuarioDestino}&mensaje=${encodeURIComponent(mensaje)}`
-    });
-    const data = await res.json();
-    if (!data.success && data.error) {
-      document.getElementById("errorSpam").style.display = "block";
-      document.getElementById("errorSpam").textContent = data.error;
-      return;
-    }
-    e.target.reset();
-    loadChat();
-  });
-  setInterval(loadChat, 3000);
-  loadChat();
-</script>
-<script src="../admin/assets/js/plugins/bootstrap.min.js"></script>
-</body>
-</html>
 </body>
 </html>

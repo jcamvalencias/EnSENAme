@@ -1,17 +1,40 @@
 <?php
 require_once __DIR__ . '/../includes/session.php';
+
+// Verificar si el usuario está logueado
+if (empty($_SESSION['txtdoc'])) {
+    header('Location: ../login.php');
+    exit();
+}
+
+// Verificar si necesita cambiar contraseña ANTES de mostrar el dashboard
+if (!empty($_SESSION['force_pw_change'])) {
+    header('Location: ../admin/dashboard/change_password.php');
+    exit();
+}
+
 include '../conexion.php';
-$nombre = '';
-if (!empty($_SESSION['txtdoc'])) {
-  $doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
-  $res = mysqli_query($conexion, "SELECT p_nombre FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
-  if ($row = mysqli_fetch_assoc($res)) {
+
+// Verificar en la base de datos si necesita cambio de contraseña
+$doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
+$res = mysqli_query($conexion, "SELECT p_nombre, needs_pw_change FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
+if ($row = mysqli_fetch_assoc($res)) {
     $nombre = $row['p_nombre'];
-  } else {
-    $nombre = 'Usuario';
-  }
+    // Si la base de datos indica que necesita cambio, redirigir
+    if (!empty($row['needs_pw_change']) && $row['needs_pw_change'] == 1) {
+        $_SESSION['force_pw_change'] = true;
+        header('Location: ../admin/dashboard/change_password.php');
+        exit();
+    }
 } else {
-  $nombre = 'Usuario';
+    // Usuario no encontrado, redirigir al login
+    session_destroy();
+    header('Location: ../login.php');
+    exit();
+}
+
+if (empty($nombre)) {
+    $nombre = 'Usuario';
 }
 ?>
 <!DOCTYPE html>
@@ -51,7 +74,7 @@ if (!empty($_SESSION['txtdoc'])) {
     <div class="navbar-wrapper">
       <div class="m-header">
         <a href="index.php" class="b-brand text-primary">
-          <img src="../admin/assets/images/logoensename.png" class="img-fluid" alt="">
+          <img src="../admin/assets/images/logoensenamenobg.png" alt="EnSEÑAme Logo" class="img-fluid" />
         </a>
       </div>
       <div class="navbar-content">
@@ -65,13 +88,25 @@ if (!empty($_SESSION['txtdoc'])) {
           <li class="pc-item">
             <a href="producto.php" class="pc-link">
               <span class="pc-micon"><i class="ti ti-book"></i></span>
-              <span class="pc-mtext">Guias</span>
+              <span class="pc-mtext">Guías LSC</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="chatbot.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-robot"></i></span>
+              <span class="pc-mtext">Asistente Virtual</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="chat.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-brand-hipchat"></i></span>
+              <span class="pc-mtext">Chat</span>
             </a>
           </li>
           <li class="pc-item">
             <a href="servicio.php" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
-              <span class="pc-mtext">Chats</span>
+              <span class="pc-micon"><i class="ti ti-headset"></i></span>
+              <span class="pc-mtext">Servicios</span>
             </a>
           </li>
         </ul>
@@ -99,14 +134,14 @@ if (!empty($_SESSION['txtdoc'])) {
         <ul class="list-unstyled">
           <li class="dropdown pc-h-item header-user-profile">
             <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
-              <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+              <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
             <span><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></span>
             </a>
             <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
               <div class="dropdown-header">
                 <div class="d-flex mb-1">
                   <div class="flex-shrink-0">
-                    <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
+                    <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
                   </div>
                   <div class="flex-grow-1 ms-3">
                     <h6 class="mb-1"><?php echo htmlspecialchars(isset($_SESSION['display_name']) ? $_SESSION['display_name'] : ($nombre !== '' ? $nombre : 'Usuario')); ?></h6>
@@ -128,6 +163,10 @@ if (!empty($_SESSION['txtdoc'])) {
                     <i class="ti ti-edit-circle"></i>
                     <span>Editar Perfil</span>
                   </a>
+                  <a href="user-profile.php" class="dropdown-item">
+                    <i class="ti ti-user"></i>
+                    <span>Ver Perfil</span>
+                  </a>
                   <a href="logout.php" class="dropdown-item">
                     <i class="ti ti-power"></i>
                     <span>Salir</span>
@@ -136,11 +175,11 @@ if (!empty($_SESSION['txtdoc'])) {
                 <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
                   <a href="#" class="dropdown-item">
                     <i class="ti ti-help"></i>
-                    <span>Support</span>
+                    <span>Soporte</span>
                   </a>
-                  <a href="#" class="dropdown-item">
+                  <a href="account-profile.php" class="dropdown-item">
                     <i class="ti ti-user"></i>
-                    <span>Account Settings</span>
+                    <span>Configuración de Cuenta</span>
                   </a>
                   <a href="#" class="dropdown-item">
                     <i class="ti ti-messages"></i>
@@ -209,10 +248,79 @@ if (!empty($_SESSION['txtdoc'])) {
       </div>
       <br><br>
       <!-- Fin Carrusel-->
+      
+      <!-- Botón de acceso a IA -->
+      <div class="row justify-content-center my-5">
+  <div class="col-md-8">
+    <div class="card shadow-lg border-0 position-relative overflow-hidden ai-card">
+      <div class="card-body text-center py-5">
+        <div class="icon-circle mb-4 mx-auto">
+        <i class="ti ti-device-computer-camera text-white" style="font-size: 2.5rem;"></i>
+        </div>
+        <h3 class="fw-bold text-primary mb-3">Inteligencia Artificial</h3>
+        <p class="text-muted mb-4 mx-auto" style="max-width: 650px;">
+          Experimenta nuestro <strong>sistema de reconocimiento de lenguaje de señas colombiano (LSC) powered by AI.</strong> Traduce señas en tiempo real.
+        </p>
+        <a href="../IA/index.html" class="btn btn-primary btn-lg px-4 py-2 shadow-sm">
+          <i class="ti ti-arrow-right me-2"></i> Probar el Traductor
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Fondo degradado y animación para la tarjeta de IA */
+  .ai-card {
+    background: linear-gradient(145deg, #ffffff, #f3f8ff);
+    border-radius: 1rem;
+    transition: all 0.4s ease;
+  }
+
+  .ai-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Círculo del ícono principal */
+  .icon-circle {
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, #1e63d0, #0a1a3f);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 15px rgba(30, 99, 208, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ai-card:hover .icon-circle {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(30, 99, 208, 0.5);
+  }
+
+  /* Botón con animación sutil */
+  .btn-primary {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: #0a1a3f;
+    transform: translateY(-3px);
+  }
+
+  
+</style>
+
+     
+      
+      
       <section class="page-section" id="services">
         <div class="container">
           <div class="text-center">
             <h2 class="h3 mb-1 text-gray-800">¿Quienes somos?</h2>
+            <br>
             <h4> <small  class="section-subheading text-muted">Somos un equipo multidisciplinario comprometido con la inclusión y la accesibilidad.
               Nuestro objetivo principal es desarrollar una app innovadora que traduzca en tiempo real el lenguaje 
               de señas colombiano (LSC) a texto y voz, facilitando la comunicación entre personas sordas y oyentes. 
@@ -257,7 +365,7 @@ if (!empty($_SESSION['txtdoc'])) {
                   <h4 class="section-subheading text-muted">¿Por qué es importante desarrollar nuestra app?</h4>
                 </div>
                 <br>
-                <h5><small>En la actualidad, la comunicación efectiva sigue siendo uno de los principales desafíos para las personas con discapacidades auditivas, especialmente aquellas que utilizan el lenguaje de señas como su principal medio de expresión. Esta forma de comunicación, aunque rica y compleja, no es comprendida por la mayoría de la población oyente, lo que genera una barrera significativa para la inclusión social, educativa y laboral de las personas sordas.
+                <h4><small>En la actualidad, la comunicación efectiva sigue siendo uno de los principales desafíos para las personas con discapacidades auditivas, especialmente aquellas que utilizan el lenguaje de señas como su principal medio de expresión. Esta forma de comunicación, aunque rica y compleja, no es comprendida por la mayoría de la población oyente, lo que genera una barrera significativa para la inclusión social, educativa y laboral de las personas sordas.
                   <br><br>
                   Este proyecto surge de la necesidad urgente de reducir la brecha comunicativa entre personas sordas y oyentes, promoviendo la igualdad de oportunidades y el ejercicio pleno de los derechos de comunicación e interacción. En particular, se busca diseñar una herramienta tecnológica que permita la traducción en tiempo real del lenguaje de señas a texto escrito, facilitando así una interacción más fluida, accesible y comprensible para ambas partes.
                   <br><br>
@@ -266,20 +374,20 @@ if (!empty($_SESSION['txtdoc'])) {
                   En la educación, facilita la participación de estudiantes sordos en entornos inclusivos.
                   <br>
                   En el entorno laboral, contribuiría a una mayor integración de personas sordas en equipos de trabajo diversos.
-                </small></h5>
+                </small></h4>
                 <br><br>
                 <div class="card mb-4">
                   <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">% de Progreso de los avances</h6>
                   </div>
                   <div class="card-body">
-                    <div class="mb-1 small">IA traductora <h4>25%</h4></div>
+                    <div class="mb-1 small">IA traductora <h4>70%</h4></div>
                     <div class="progress mb-4">
-                      <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    <div class="mb-1 small">Desarrollo general <h4>42%</h4></div>
+                    <div class="mb-1 small">Desarrollo general <h4>76%</h4></div>
                     <div class="progress progress-sm mb-2">
-                      <div class="progress-bar" role="progressbar" style="width: 42%" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar" role="progressbar" style="width: 76%" aria-valuenow="76" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
                 </div>
@@ -298,14 +406,12 @@ if (!empty($_SESSION['txtdoc'])) {
       </footer>
     </div>
   </div>
-  <script src="../assets/js/plugins/apexcharts.min.js"></script>
-  <script src="../assets/js/pages/dashboard-default.js"></script>
-  <script src="../assets/js/plugins/popper.min.js"></script>
-  <script src="../assets/js/plugins/simplebar.min.js"></script>
-  <script src="../js/bootstrap.min.js"></script>
-  <script src="../assets/js/fonts/custom-font.js"></script>
-  <script src="../assets/js/pcoded.js"></script>
-  <script src="../assets/js/plugins/feather.min.js"></script>
+  <script src="../admin/assets/js/plugins/popper.min.js"></script>
+  <script src="../admin/assets/js/plugins/simplebar.min.js"></script>
+  <script src="../admin/assets/js/plugins/bootstrap.min.js"></script>
+  <script src="../admin/assets/js/fonts/custom-font.js"></script>
+  <script src="../admin/assets/js/pcoded.js"></script>
+  <script src="../admin/assets/js/plugins/feather.min.js"></script>
   <script>layout_change('light');</script>
   <script>change_box_container('false');</script>
   <script>layout_rtl_change('false');</script>

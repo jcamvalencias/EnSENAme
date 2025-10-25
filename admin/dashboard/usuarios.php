@@ -86,51 +86,96 @@ $result = mysqli_query($conexion, $query);
   <div class="navbar-wrapper">
     <div class="m-header">
       <a href="../dashboard/index.php" class="b-brand text-primary">
-        <!-- ========   Change your logo from here   ============ -->
-        <img src="../assets/images/logoensename.png" class="img-fluid" alt="">
+        <img src="../assets/images/logoensenamenobg.png" class="img-fluid logo-lg" alt="EnSEÑAme" style="max-height: 40px;">
       </a>
     </div>
     <div class="navbar-content">
     <ul class="pc-navbar">
-  <li class="pc-item">
-    <a href="../dashboard/index.php" class="pc-link">
-      <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
-      <span class="pc-mtext">Inicio</span>
-    </a>
-  </li>     
-  
-<li class="pc-item pc-hasmenu">
-  <a href="javascript:void(0);" class="pc-link">
-    <span class="pc-micon"><i class="ti ti-users"></i></span>
-    <span class="pc-mtext">Usuarios</span>
-    <span class="pc-arrow"><i class="ti ti-chevron-down"></i></span>
-  </a>
-  <ul class="pc-submenu">
-    <li class="pc-item">
-      <a href="crear.php" class="pc-link">
-        <span class="pc-mtext">Agregar usuario</span>
-      </a>
-    </li>
-    <li class="pc-item">
-      <a href="usuarios.php" class="pc-link">
-        <span class="pc-mtext">Ver Usuarios</span>
-      </a>
-    </li>
-  </ul>
-</li>
-
- <li class="pc-item">
-  <a href="producto.php" class="pc-link">
-        <span class="pc-micon"><i class="ti ti-book"></i></span>
-        <span class="pc-mtext">Guias</span>
-      </a>
-  </li>
-  <li class="pc-item">
-          <a href="servicio.php" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
-            <span class="pc-mtext">Chats</span>
-          </a>
-        </li>
+      <li class="pc-item">
+        <a href="index.php" class="pc-link">
+          <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+          <span class="pc-mtext">Inicio</span>
+        </a>
+      </li>
+      <li class="pc-item pc-hasmenu">
+        <a href="javascript:void(0);" class="pc-link">
+          <span class="pc-micon"><i class="ti ti-users"></i></span>
+          <span class="pc-mtext">Usuarios</span>
+          <span class="pc-arrow"><i class="ti ti-chevron-down"></i></span>
+        </a>
+        <ul class="pc-submenu" style="display: block;">
+          <li class="pc-item"><a href="crear.php" class="pc-link"><span class="pc-mtext">Agregar usuario</span></a></li>
+          <li class="pc-item"><a href="usuarios.php" class="pc-link active"><span class="pc-mtext">Ver usuarios</span></a></li>
+        </ul>
+      </li>
+      <li class="pc-item">
+        <a href="producto.php" class="pc-link">
+          <span class="pc-micon"><i class="ti ti-book"></i></span>
+          <span class="pc-mtext">Guías</span>
+        </a>
+      </li>
+      <li class="pc-item">
+        <a href="asistente_virtual.php" class="pc-link">
+          <span class="pc-micon"><i class="ti ti-robot"></i></span>
+          <span class="pc-mtext">Asistente Virtual</span>
+        </a>
+      </li>
+      <li class="pc-item">
+        <a href="chat.php" class="pc-link">
+          <span class="pc-micon"><i class="ti ti-brand-hipchat"></i></span>
+          <span class="pc-mtext">Chat</span>
+        </a>
+      </li>
+      <li class="pc-item">
+        <a href="chatbot_stats.php" class="pc-link">
+          <span class="pc-micon"><i class="ti ti-chart-line"></i></span>
+          <span class="pc-mtext">Estadísticas IA</span>
+        </a>
+      </li>
+      <li class="pc-item">
+        <a href="servicio.php" class="pc-link">
+          <span class="pc-micon"><i class="ti ti-headset"></i></span>
+          <span class="pc-mtext">Servicios</span>
+        </a>
+      </li>
+      <li class="pc-item">
+        <a href="../../IA/index.html" class="pc-link" target="_blank">
+          <span class="pc-micon"><i class="ti ti-brain"></i></span>
+          <span class="pc-mtext">Sistema IA</span>
+        </a>
+      </li>
+      <li class="pc-item pc-hasmenu">
+        <a href="javascript:void(0);" class="pc-link">
+          <span class="pc-micon"><i class="ti ti-users"></i></span>
+          <span class="pc-mtext">Usuarios</span>
+          <span class="pc-arrow"><i class="ti ti-chevron-down"></i></span>
+        </a>
+        <ul class="pc-submenu">
+          <li class="pc-item">
+            <a href="crear.php" class="pc-link">
+              <span class="pc-mtext">Agregar usuario</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="usuarios.php" class="pc-link">
+              <span class="pc-mtext">Ver usuarios</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="pc-item">
+        <a href="producto.php" class="pc-link">
+          <span class="pc-micon"><i class="ti ti-book"></i></span>
+          <span class="pc-mtext">Guías</span>
+        </a>
+      </li>
+      <li class="pc-item">
+        <a href="servicio.php" class="pc-link">
+          <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
+          <span class="pc-mtext">Chats</span>
+        </a>
+      </li>
+    </ul>
 
     </div>
     
@@ -381,8 +426,8 @@ $result = mysqli_query($conexion, $query);
               </td>
               <td><?= $rol ?></td>
               <td>
-                <a href="/enseñame/EnSENAme/admin/dashboard/editar.php?id=<?= $id ?>" class="btn btn-warning btn-sm">Editar</a>
-                <a href="/enseñame/EnSENAme/admin/dashboard/eliminar.php?id=<?= $id ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</a>
+                <a href="editar.php?id=<?= $id ?>" class="btn btn-warning btn-sm">Editar</a>
+                <a href="eliminar.php?id=<?= $id ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</a>
                 <?php if ($needs): ?>
                   <form method="post" style="display:inline">
                     <input type="hidden" name="user_id" value="<?= $id ?>">

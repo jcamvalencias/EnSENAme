@@ -1,0 +1,7 @@
+# Ignore log files
+*.log
+
+# Python virtualenv and cache
+.venv/
+__pycache__/
+*.pyc

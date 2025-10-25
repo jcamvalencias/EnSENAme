@@ -89,12 +89,22 @@
             
             <div class="mb-3">
                 <label for="clave" class="form-label">Clave</label>
-                <input type="password" name="clave" id="clave" class="form-control" required>
+                <div class="input-group">
+                  <input type="password" name="clave" id="clave" class="form-control" required>
+                  <button class="btn btn-outline-secondary" type="button" id="togglePasswordReg">
+                    <i class="ti ti-eye" id="eyeIconReg"></i>
+                  </button>
+                </div>
               </div>
               
               <div class="mb-3">
                 <label for="confirmarClave" class="form-label">Confirmar Clave</label>
-                <input type="password" name="confirmarClave" id="confirmarClave" class="form-control" required>
+                <div class="input-group">
+                  <input type="password" name="confirmarClave" id="confirmarClave" class="form-control" required>
+                  <button class="btn btn-outline-secondary" type="button" id="togglePasswordConfirm">
+                    <i class="ti ti-eye" id="eyeIconConfirm"></i>
+                  </button>
+                </div>
                 <div id="mensajeError" class="error-message"></div>
               </div>
               <div class="mb-3">
@@ -115,6 +125,45 @@
   </div>
   
   <script>
+    // Funcionalidad para mostrar/ocultar contraseñas
+    document.addEventListener('DOMContentLoaded', function() {
+      // Toggle para contraseña principal
+      const togglePasswordReg = document.getElementById('togglePasswordReg');
+      const passwordInputReg = document.getElementById('clave');
+      const eyeIconReg = document.getElementById('eyeIconReg');
+      
+      if (togglePasswordReg && passwordInputReg && eyeIconReg) {
+        togglePasswordReg.addEventListener('click', function() {
+          const type = passwordInputReg.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInputReg.setAttribute('type', type);
+          
+          if (type === 'text') {
+            eyeIconReg.className = 'ti ti-eye-off';
+          } else {
+            eyeIconReg.className = 'ti ti-eye';
+          }
+        });
+      }
+      
+      // Toggle para confirmar contraseña
+      const togglePasswordConfirm = document.getElementById('togglePasswordConfirm');
+      const passwordInputConfirm = document.getElementById('confirmarClave');
+      const eyeIconConfirm = document.getElementById('eyeIconConfirm');
+      
+      if (togglePasswordConfirm && passwordInputConfirm && eyeIconConfirm) {
+        togglePasswordConfirm.addEventListener('click', function() {
+          const type = passwordInputConfirm.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInputConfirm.setAttribute('type', type);
+          
+          if (type === 'text') {
+            eyeIconConfirm.className = 'ti ti-eye-off';
+          } else {
+            eyeIconConfirm.className = 'ti ti-eye';
+          }
+        });
+      }
+    });
+    
     // Reglas mínimas para contraseña: longitud >=10, mayúscula, minúscula, número y símbolo
     function validarPassword(pw) {
       if (!pw || pw.length < 10) return false;

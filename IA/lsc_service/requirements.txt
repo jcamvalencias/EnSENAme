@@ -1,0 +1,3 @@
+# Descontinuado: la versión Flask dejó de usarse.
+# Conservamos este archivo sólo para evitar errores en IDEs.
+# No es necesario instalar paquetes; usa la versión portable (web).

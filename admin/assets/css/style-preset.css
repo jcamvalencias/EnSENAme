@@ -239,9 +239,25 @@ h2 {
   --bs-table-active-color: #ffffff;
   --bs-table-hover-bg: #1d92ff;
   --bs-table-hover-color: #ffffff;
+}
+
+/* ==========================
+   Global override: primary
+   Forzar el color primary a #528bca (RGB 82,139,202)
+   Esto evita cambiar manualmente todas las presets y mantiene coherencia
+   ==========================
+*/
+:root {
+  --bs-primary: #528bca !important;
+  --bs-primary-rgb: 82, 139, 202 !important;
+  --bs-primary-light: #e3eef7 !important;
+  --bs-link-color: #528bca !important;
+  --bs-btn-bg: #528bca !important;
+  --bs-btn-border-color: #528bca !important;
+}
   color: var(--bs-table-color);
   border-color: var(--bs-table-border-color);
-}
+
 
 [data-pc-preset=preset-2] {
   --pc-sidebar-active-color: #3366ff;
@@ -443,9 +459,25 @@ h2 {
   --bs-table-active-color: #ffffff;
   --bs-table-hover-bg: #3769ff;
   --bs-table-hover-color: #ffffff;
+}
+
+/* ==========================
+   Global override: primary
+   Forzar el color primary a #528bca (RGB 82,139,202)
+   Esto evita cambiar manualmente todas las presets y mantiene coherencia
+   ==========================
+*/
+:root {
+  --bs-primary: #528bca !important;
+  --bs-primary-rgb: 82, 139, 202 !important;
+  --bs-primary-light: #e3eef7 !important;
+  --bs-link-color: #528bca !important;
+  --bs-btn-bg: #528bca !important;
+  --bs-btn-border-color: #528bca !important;
+}
   color: var(--bs-table-color);
   border-color: var(--bs-table-border-color);
-}
+
 
 [data-pc-preset=preset-3] {
   --pc-sidebar-active-color: #7265e6;

@@ -4,8 +4,14 @@ include_once "conexion.php";
 include_once "codigo.php";
 header('Content-Type: application/json');
 
-// Debes tener el ID del usuario logueado en $_SESSION['txtdoc']
-$usuarioActual = isset($_SESSION['txtdoc']) ? intval($_SESSION['txtdoc']) : 0;
+// Verificar sesión del usuario
+if (empty($_SESSION['txtdoc'])) {
+    http_response_code(401);
+    echo json_encode(["error" => "No autorizado"]);
+    exit;
+}
+
+$usuarioActual = intval($_SESSION['txtdoc']);
 
 
 // El ID del usuario destino debe enviarse por POST o GET

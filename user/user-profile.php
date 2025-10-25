@@ -6,6 +6,32 @@ if (file_exists($sessionInclude)) {
 } else {
     if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 }
+
+// Verificar si el usuario está logueado
+if (empty($_SESSION['txtdoc'])) {
+    header('Location: ../login.php');
+    exit();
+}
+
+include '../conexion.php';
+
+// Obtener información del usuario desde la base de datos
+$doc = mysqli_real_escape_string($conexion, $_SESSION['txtdoc']);
+$res = mysqli_query($conexion, "SELECT p_nombre, s_nombre, p_apellido, s_apellido FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
+if ($row = mysqli_fetch_assoc($res)) {
+    $nombre = $row['p_nombre'];
+    $nombre_completo = trim($row['p_nombre'] . ' ' . $row['s_nombre'] . ' ' . $row['p_apellido'] . ' ' . $row['s_apellido']);
+} else {
+    $nombre = 'Usuario';
+    $nombre_completo = 'Usuario';
+}
+
+if (empty($nombre)) {
+    $nombre = 'Usuario';
+}
+if (empty($nombre_completo)) {
+    $nombre_completo = 'Usuario';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,40 +78,44 @@ if (file_exists($sessionInclude)) {
 <nav class="pc-sidebar">
   <div class="navbar-wrapper">
     <div class="m-header">
-      <a href="../dashboard/index.php" class="b-brand text-primary">
+      <a href="index.php" class="b-brand text-primary">
         <!-- ========   Change your logo from here   ============ -->
-        <img src="../admin/assets/images/logoensename.png" class="img-fluid" alt="">
+        <img src="../admin/assets/images/logoensenamenobg.png" alt="EnSEÑAme Logo" class="img-fluid" />
       </a>
     </div>
     <div class="navbar-content">
     <ul class="pc-navbar">
-  <li class="pc-item">
-    <a href="../dashboard/index.php" class="pc-link">
-      <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
-      <span class="pc-mtext">Inicio</span>
-    </a>
-  </li>     
-  
-  <li class="pc-item">
-    <a href="http://localhost/ense%C3%B1ame/admin/application/usuarios.php" class="pc-link">
-      <span class="pc-micon"><i class="ti ti-users"></i></span>
-      <span class="pc-mtext">Usuarios</span>
-    </a>
-  </li>
-
-  <li class="pc-item">
-      <a href="../application/user-list.html" class="pc-link">
-        <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
-        <span class="pc-mtext">Producto</span>
-      </a>
-  </li>
-  <li class="pc-item">
-          <a href="../application/servicio.php" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-brand-chrome"></i></span>
-            <span class="pc-mtext">Servicio</span>
-          </a>
-        </li>
-</ul>
+          <li class="pc-item">
+            <a href="index.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+              <span class="pc-mtext">Inicio</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="producto.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-book"></i></span>
+              <span class="pc-mtext">Guías LSC</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="chatbot.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-robot"></i></span>
+              <span class="pc-mtext">Asistente Virtual</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="chat.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-brand-hipchat"></i></span>
+              <span class="pc-mtext">Chat</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="servicio.php" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-headset"></i></span>
+              <span class="pc-mtext">Servicios</span>
+            </a>
+          </li>
+        </ul>
 
     </div>
     
@@ -145,7 +175,7 @@ if (file_exists($sessionInclude)) {
         aria-expanded="false"
       >
         <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
-        <span>Camilo</span>
+        <span><?php echo htmlspecialchars($nombre); ?></span>
       </a>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
@@ -154,8 +184,8 @@ if (file_exists($sessionInclude)) {
               <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
             </div>
             <div class="flex-grow-1 ms-3">
-              <h6 class="mb-1">Camilo</h6>
-              <span>Admin</span>
+              <h6 class="mb-1"><?php echo htmlspecialchars($nombre_completo); ?></h6>
+              <span>Usuario</span>
             </div>
             
           </div>
@@ -190,30 +220,33 @@ if (file_exists($sessionInclude)) {
         </ul>
         <div class="tab-content" id="mysrpTabContent">
           <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1" tabindex="0">
+            <a href="editarperfil.php" class="dropdown-item">
+              <i class="ti ti-edit-circle"></i>
+              <span>Editar Perfil</span>
+            </a>
+            <a href="user-profile.php" class="dropdown-item">
+              <i class="ti ti-user"></i>
+              <span>Ver Perfil</span>
+            </a>
             <a href="logout.php" class="dropdown-item">
               <i class="ti ti-power"></i>
-              <span>Logout</span>
-            </a>
-            <a href="#!" class="dropdown-item">
-              <i class="ti ti-user"></i>
-              <span>View Profile</span>
-            </a>
-            <a href="#!" class="dropdown-item">
-              <i class="ti ti-power"></i>
-              <span>Logout</span>
+              <span>Salir</span>
             </a>
           </div>
           <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
-            <a href="#!" class="dropdown-item">
+            <a href="#" class="dropdown-item">
               <i class="ti ti-help"></i>
-              <span>Support</span>
+              <span>Soporte</span>
             </a>
-            <a href="#!" class="dropdown-item">
+            <a href="account-profile.php" class="dropdown-item">
               <i class="ti ti-user"></i>
-              <span>Account Settings</span>
+              <span>Configuración de Cuenta</span>
             </a>
-            <a href="#!" class="dropdown-item">
+            <a href="#" class="dropdown-item">
               <i class="ti ti-messages"></i>
+              <span>Feedback</span>
+            </a>
+          </div>
               <span>Feedback</span>
             </a>
           </div>
@@ -241,14 +274,14 @@ if (file_exists($sessionInclude)) {
           <div class="row align-items-center">
             <div class="col-md-12">
               <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../dashboard/index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                 <li class="breadcrumb-item"><a href="javascript: void(0)">Users</a></li>
                 <li class="breadcrumb-item" aria-current="page">User Profile</li>
               </ul>
             </div>
             <div class="col-md-12">
               <div class="page-header-title">
-                <h2 class="mb-0">Registro de perfil de usuario</h2>
+                <h2 class="mb-0">Perfil de Usuario</h2>
               </div>
             </div>
           </div>
@@ -258,163 +291,138 @@ if (file_exists($sessionInclude)) {
       <!-- [ Main Content ] start -->
       <div class="row">
         <!-- [ sample-page ] start -->
-        <div class="col-sm-12">          
-            </div>
-            <div class="col-md-8">
-              <div class="tab-content" id="user-set-tabContent">
-                <div class="tab-pane fade show active" id="user-cont-1" role="tabpanel">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-10">
-                          <h5>Información personal</h5>
-                          <hr class="mb-4">
-                          <?php
-                          if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                            $tipoDocumento = $_POST["tipoDocumento"];
-                            $numeroDocumento = $_POST["numeroDocumento"];
-                            $primerNombre = $_POST["primerNombre"];
-                            $segundoNombre = $_POST["segundoNombre"];
-                            $primerApellido = $_POST["primerApellido"];
-                            $segundoApellido = $_POST["segundoApellido"];
-                          }
-                          ?>
-                        <form action="http://localhost/enseñame/admin/dashboard/index.php" method="post"></form>
-                        </div>
-                        <div class="col-sm-4">
-                          <div class="form-group">
-                            <label for="tipoDocumento">Tipo de Documento:                       
-                            <select name="tipoDocumento" id="tipoDocumento" required>
-                              <option value="">Seleccione</option>
-                              <option value="1">TI</option>
-                              <option value="2">CC</option>
-                              <option value="3">NN</option>
-                            </select>
-                          </label> 
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-12">
+                  <h5>Perfil de Usuario</h5>
+                  <hr class="mb-4">
+                  
+                  <?php
+                  // Cargar datos del usuario desde la base de datos
+                  $res = mysqli_query($conexion, "SELECT Tipo_Documento, ID, p_nombre, s_nombre, p_apellido, s_apellido FROM tb_usuarios WHERE ID = '$doc' LIMIT 1");
+                  if ($row = mysqli_fetch_assoc($res)) {
+                      $usuario_data = $row;
+                  } else {
+                      echo '<div class="alert alert-warning">No se pudo cargar la información del usuario.</div>';
+                      $usuario_data = ['Tipo_Documento' => '', 'ID' => '', 'p_nombre' => '', 's_nombre' => '', 'p_apellido' => '', 's_apellido' => ''];
+                  }
+                  ?>
+                  
+                  <!-- Información de perfil en formato de visualización -->
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="card text-center">
+                        <div class="card-body">
+                          <img src="../admin/assets/images/user/avatar-2.jpg" alt="user-image" class="img-fluid rounded-circle mb-3" style="width: 120px; height: 120px;">
+                          <h5 class="mb-1"><?php echo htmlspecialchars($nombre_completo); ?></h5>
+                          <p class="text-muted mb-3">Usuario del Sistema</p>
+                          <div class="d-grid gap-2">
+                            <a href="editarperfil.php" class="btn btn-primary">
+                              <i class="ti ti-edit"></i> Editar Perfil
+                            </a>
+                            <a href="index.php" class="btn btn-outline-secondary">
+                              <i class="ti ti-arrow-left"></i> Volver al Inicio
+                            </a>
                           </div>
                         </div>
-                        <div class="col-sm-6">
-                          <div class="form-group">
-                            <label for="numeroDocumento">Número de Documento:</label>
-                              <input type="text" name="numeroDocumento" id="numeroDocumento" required>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-8">
+                      <div class="card">
+                        <div class="card-header">
+                          <h5 class="mb-0">Información Personal</h5>
+                        </div>
+                        <div class="card-body">
+                          <div class="row mb-3">
+                            <div class="col-sm-4">
+                              <strong>Tipo de Documento:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                              <span class="badge bg-light-primary"><?php echo htmlspecialchars($usuario_data['Tipo_Documento'] ?: 'No especificado'); ?></span>
+                            </div>
+                          </div>
+                          
+                          <div class="row mb-3">
+                            <div class="col-sm-4">
+                              <strong>Número de Documento:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                              <?php echo htmlspecialchars($usuario_data['ID']); ?>
+                            </div>
+                          </div>
+                          
+                          <div class="row mb-3">
+                            <div class="col-sm-4">
+                              <strong>Primer Nombre:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                              <?php echo htmlspecialchars($usuario_data['p_nombre'] ?: 'No especificado'); ?>
+                            </div>
+                          </div>
+                          
+                          <div class="row mb-3">
+                            <div class="col-sm-4">
+                              <strong>Segundo Nombre:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                              <?php echo htmlspecialchars($usuario_data['s_nombre'] ?: 'No especificado'); ?>
+                            </div>
+                          </div>
+                          
+                          <div class="row mb-3">
+                            <div class="col-sm-4">
+                              <strong>Primer Apellido:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                              <?php echo htmlspecialchars($usuario_data['p_apellido'] ?: 'No especificado'); ?>
+                            </div>
+                          </div>
+                          
+                          <div class="row mb-3">
+                            <div class="col-sm-4">
+                              <strong>Segundo Apellido:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                              <?php echo htmlspecialchars($usuario_data['s_apellido'] ?: 'No especificado'); ?>
+                            </div>
                           </div>
                         </div>
-                        <div class="col-sm-4">
-                          <div class="form-group">
-                            <label for="primerNombre">Primer Nombre:</label>
-                            <input type="text" name="primerNombre" id="primerNombre" required>
-                          </div>
-                        </div>
-                        <div class="col-sm-6">
-                          <div class="form-group">
-                            <label for="segundoNombre">Segundo Nombre:</label>
-                            <input type="text" name="segundoNombre" id="segundoNombre" requerid>
-                          </div>
-                        </div>
-                        <div class="col-sm-4">
-                          <div class="form-group">
-                            <label for="primerApellido">Primer Apellido:</label>
-                            <input type="text" name="primerApellido" id="primerApellido" required>
-                          </div>
-                        </div>
-                        <div class="col-sm-6">
-                          <div class="form-group">
-                            <label for="segundoApellido">Segundo Apellido:</label>
-                            <input type="text" name="segundoApellido" id="segundoApellido">
-                          </div>
-                        </div>
-                        <div class="col-sm-4">
-                          <div class="form-group">
-                            <label for="clave">Clave:</label>
-                            <input type="password" name="clave" id="clave" required>
-                          </div>
-                        </div>
-                        <div class="col-sm-4">
-                          <div class="form-group">
-                            <label for="confirmarClave">CClave:</label>
-                            <input type="password" name="confirmarClave" id="confirmarClave" required>
-                          </div>
-                        </div>                        
                       </div>
                       
-                      <button type="submit" name="btn_registrar" id="btn_registrar" class="btn btn-primary">Registrar</button>
-                    </div>
-                    </form>
-                 </div>
-                   <script>
-                    function validarFormulario() {
-                    const clave = document.getElementById('clave').value;
-                    const confirmarClave = document.getElementById('confirmarClave').value;
-                    const mensajeError = document.getElementById('mensajeError');
-
-                    if (clave !== confirmarClave) {
-                    mensajeError.textContent = "Las claves no coinciden.";
-                    return false;
-                    } else {
-                    mensajeError.textContent = "";
-                    return true;
-                    }
-                    }
-                  </script>
-
-                </div>                
-                <div class="tab-pane fade" id="user-cont-3" role="tabpanel">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-12">
-                          <h5>Change Password</h5>
-                          <hr class="mb-4">
+                      <!-- Estadísticas del usuario -->
+                      <div class="card mt-3">
+                        <div class="card-header">
+                          <h5 class="mb-0">Actividad en el Sistema</h5>
                         </div>
-                        <div class="col-lg-6">
-                          <div class="form-group">
-                            <label class="form-label">Old Password</label>
-                            <input type="password" class="form-control">
+                        <div class="card-body">
+                          <div class="row text-center">
+                            <div class="col-4">
+                              <div class="d-flex flex-column align-items-center">
+                                <i class="ti ti-user-check text-success" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2 mb-0">Estado</h6>
+                                <small class="text-muted">Activo</small>
+                              </div>
+                            </div>
+                            <div class="col-4">
+                              <div class="d-flex flex-column align-items-center">
+                                <i class="ti ti-shield-check text-primary" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2 mb-0">Rol</h6>
+                                <small class="text-muted">Usuario</small>
+                              </div>
+                            </div>
+                            <div class="col-4">
+                              <div class="d-flex flex-column align-items-center">
+                                <i class="ti ti-calendar text-info" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2 mb-0">Sistema</h6>
+                                <small class="text-muted">EnSEÑAme</small>
+                              </div>
+                            </div>
                           </div>
-                          <div class="form-group">
-                            <label class="form-label">New Password</label>
-                            <input type="password" class="form-control">
-                          </div>
-                          <div class="form-group">
-                            <label class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control">
-                          </div>
-                        </div>
-                        <div class="col-lg-6">
-                          <h5>New password must contain:</h5>
-                          <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><i class="ti ti-minus me-2"></i> At least 8 characters</li>
-                            <li class="list-group-item"><i class="ti ti-minus me-2"></i> At least 1 lower letter (a-z)</li>
-                            <li class="list-group-item"><i class="ti ti-minus me-2"></i> At least 1 uppercase letter (A-Z)</li>
-                            <li class="list-group-item"><i class="ti ti-minus me-2"></i> At least 1 number (0-9)</li>
-                            <li class="list-group-item"><i class="ti ti-minus me-2"></i> At least 1 special characters</li>
-                          </ul>
                         </div>
                       </div>
-                    </div>
-                    <div class="card-footer text-end btn-page">
-                      <div class="btn btn-outline-secondary">Cancel</div>
-                      <div class="btn btn-primary">Save</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="tab-pane fade" id="user-cont-4" role="tabpanel">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-12">
-                          <h5>Settings</h5>
-                          <hr class="mb-4">
-                        </div>
-                        <div class="col-sm-12">
-                          <ul class="list-group list-group-flush">                                                        
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card-footer text-end btn-page">
-                      <div class="btn btn-outline-secondary">Cancel</div>
-                      <div class="btn btn-primary">Save</div>
                     </div>
                   </div>
                 </div>
@@ -445,7 +453,7 @@ if (file_exists($sessionInclude)) {
   </footer> <!-- Required Js -->
 <script src="../admin/assets/js/plugins/popper.min.js"></script>
 <script src="../admin/assets/js/plugins/simplebar.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
+<script src="../admin/assets/js/plugins/bootstrap.min.js"></script>
 <script src="../admin/assets/js/fonts/custom-font.js"></script>
 <script src="../admin/assets/js/pcoded.js"></script>
 <script src="../admin/assets/js/plugins/feather.min.js"></script>
