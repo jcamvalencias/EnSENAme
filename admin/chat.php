@@ -439,11 +439,18 @@ $usuarios = obtenerUsuarios();
                       <div class="flex-grow-1 me-2">
                         <textarea class="form-control border-0 shadow-none px-0" id="mensaje-input" placeholder="Escribe tu mensaje aquí..." rows="2" required></textarea>
                       </div>
-                      <button type="submit" class="btn btn-primary">
-                        <i class="ti ti-send f-18"></i>
-                      </button>
+                      <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-success" id="btn-lsc" title="Reconocer LSC de la cámara">
+                          <i class="ti ti-hand-stop"></i> LSC
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                          <i class="ti ti-send f-18"></i>
+                        </button>
+                      </div>
                     </div>
                   </form>
+                  <video id="lsc-video" autoplay playsinline style="display:none;"></video>
+                  <canvas id="lsc-canvas" style="display:none;"></canvas>
                 </div>
 
                 <!-- Pantalla inicial -->
@@ -819,6 +826,25 @@ $usuarios = obtenerUsuarios();
         const mensaje = document.getElementById('mensaje-input').value;
         enviarMensaje(mensaje);
       });
+
+      // Botón LSC
+      const btnLsc = document.getElementById('btn-lsc');
+      if (btnLsc) {
+        btnLsc.addEventListener('click', async () => {
+          try {
+            const texto = await reconocerLSC();
+            if (texto) {
+              const input = document.getElementById('mensaje-input');
+              input.value = (input.value ? input.value + ' ' : '') + texto;
+            } else {
+              alert('No se pudo reconocer texto a partir de LSC. Intenta de nuevo.');
+            }
+          } catch (err) {
+            console.error(err);
+            alert('Error al usar el servicio LSC. ¿Está ejecutándose en http://127.0.0.1:5001?');
+          }
+        });
+      }
       
       document.getElementById('buscarUsuarios').addEventListener('input', function() {
         const filtro = this.value.toLowerCase();
@@ -841,6 +867,33 @@ $usuarios = obtenerUsuarios();
         clearInterval(intervaloCarga);
       }
     });
+  </script>
+
+  <script>
+    async function reconocerLSC() {
+      const video = document.getElementById('lsc-video');
+      const canvas = document.getElementById('lsc-canvas');
+      if (!video.srcObject) {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        video.srcObject = stream;
+        await new Promise(res => { if (video.readyState >= 2) return res(); video.onloadeddata = () => res(); });
+      }
+      const w = video.videoWidth || 640;
+      const h = video.videoHeight || 480;
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      const resp = await fetch('http://127.0.0.1:5001/recognize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: dataUrl })
+      });
+      const json = await resp.json();
+      if (json && json.success && json.texto) return json.texto;
+      return '';
+    }
   </script>
 
   <script>
