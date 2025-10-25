@@ -1,36 +1,32 @@
-# LSC Microservice (Flask)
+# LSC Portable (100% navegador)
 
-A tiny Flask service to integrate LSC (Colombian Sign Language) recognition with the PHP chat.
+Versión de reconocimiento en el navegador usando TensorFlow.js + KNN con MobileNet. No requiere Python, ni servidor adicional, ni permisos de administrador.
 
-Important: This service is a clean-room reimplementation based on public ideas. The original repo had no license, so no code is copied.
+## Página
 
-## Endpoints
+- Archivo: `IA/lsc_service/index_portable.html`
+- Acceso: `http://localhost/enseñame/enSENAme/EnSENAme/IA/lsc_service/index_portable.html`
 
-- GET /health -> { ok, yolo, mediapipe }
-- POST /recognize
-  - Body (JSON):
-    - image: "data:image/jpeg;base64,..." (one frame)
-    - OR secuencias: [["H","O","L","A"],["ESPACIO"],["M","U","N","D","O"]]
-  - Response: { success, texto, clases?, aviso? }
+## Funciones
 
-## Setup (Windows PowerShell)
+- Iniciar/Detener cámara
+- Entrenar ejemplos con etiqueta personalizada
+- Predicción de una captura o en continuo
+- Guardar y cargar modelo en formato `.json`
+- Cargar “Modelo (Defecto)” incluido en el repo para probar al instante
 
-1. Create venv:
-   python -m venv .venv
+## Uso rápido
 
-2. Activate venv:
-   .\.venv\Scripts\Activate.ps1
+1. Abre la página y concede permiso a la cámara.
+2. Escribe una etiqueta (por ejemplo, "Hola") y presiona “Agregar ejemplo” varias veces con poses distintas.
+3. Presiona “Predecir” o “Iniciar continuo”.
+4. Guarda el modelo para reutilizarlo más tarde.
 
-3. Install deps:
-   pip install -r requirements.txt
+## Notas
 
-4. Place model weights (optional):
-   - Put lsc.pt next to app.py or set env var LSC_MODEL to its path.
+- El rendimiento depende de la cámara y del equipo. Para mejores resultados, agrega ejemplos variados y con buena iluminación.
+- Puedes reemplazar el modelo por defecto del repositorio con uno propio exportado como `.json`.
 
-5. Run service:
-   $env:FLASK_APP="app.py"; python app.py
-   # Service listens on http://127.0.0.1:5001
+## Enlaces relacionados
 
-## Notes
-- If ultralytics/mediapipe/cv2 are not installed or the model file is missing, the service will return stub predictions (empty classes) but still run, useful for wiring tests.
-- For production, consider GPU (CUDA) with proper drivers and set LSC_DEVICE.
+- Página IA general: `IA/index.html` (incluye acceso a la versión portable).

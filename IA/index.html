@@ -508,6 +508,12 @@
                     <button type="button" class="btn btn-warning btn-sm" onclick="load()">
                         <i class="fas fa-upload"></i> Cargar Modelo
                     </button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="loadDefault()" title="Cargar modelo de ejemplo del servidor">
+                      <i class="ti ti-download"></i> Cargar Modelo (Defecto)
+                  </button>
+                  <a href="lsc_service/index_portable.html" class="btn btn-primary btn-sm" style="text-decoration:none;">
+                      <i class="ti ti-cpu"></i> LSC Portable (Web)
+                  </a>
                 </div>
                 <p style="font-size: 0.9rem; color: #6b7280; margin: 0; text-align: center;">
                     Agrega ejemplos de señas para entrenar el modelo
@@ -718,6 +724,37 @@
                 }
             }
 
+            // Cargar datos de entrenamiento por defecto desde el servidor
+            async function loadDefaultTrainingData() {
+                try {
+                    const url = '../base%20de%20datos/datos_entrenamiento_senas%20(3).json';
+                    const res = await fetch(url, { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const loadedData = await res.json();
+
+                    // Validaciones mínimas
+                    if (!loadedData || !Array.isArray(loadedData.classNames) || !loadedData.examples) {
+                        throw new Error('Formato de modelo inválido');
+                    }
+
+                    // Reconstruir el clasificador
+                    trainingData = loadedData;
+                    classifier.clearAllClasses();
+                    for (const className of trainingData.classNames) {
+                        const list = trainingData.examples[className] || [];
+                        for (const exampleData of list) {
+                            const tensorData = tf.tensor(exampleData, [1, 1000]);
+                            classifier.addExample(tensorData, className);
+                        }
+                    }
+                    examplesAdded = trainingData.classNames.reduce((total, cn) => total + (trainingData.examples[cn]?.length || 0), 0);
+                    showStatus(`Modelo por defecto cargado: ${examplesAdded} ejemplos.`, 'success');
+                } catch (error) {
+                    console.error('Error al cargar modelo por defecto:', error);
+                    showStatus('No se pudo cargar el modelo por defecto', 'error');
+                }
+            }
+
             
             // Función para mostrar estado
             function showStatus(message, type) {
@@ -753,6 +790,11 @@
 
             window.load = function() {
                 loadTrainingDataLocal();
+            }
+
+            // Exponer carga por defecto
+            window.loadDefault = function() {
+                loadDefaultTrainingData();
             }
         });
     </script>

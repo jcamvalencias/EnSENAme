@@ -135,6 +135,18 @@ function generarPasswordTemporal() {
     return str_shuffle($password);
 }
 
+// Política mínima de contraseña (coincide con register.php)
+function password_meets_policy($pw) {
+    if (!is_string($pw)) return false;
+    if (strlen($pw) < 10) return false;
+    if (!preg_match('/[A-Z]/', $pw)) return false;
+    if (!preg_match('/[a-z]/', $pw)) return false;
+    if (!preg_match('/[0-9]/', $pw)) return false;
+    // Verificar caracteres especiales de forma más simple
+    if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};:"\'|,.<>\/?]/', $pw)) return false;
+    return true;
+}
+
 if(isset($_POST['btningresar']) && $_SESSION['login_attempts'] < $max_attempts){
 
     $numeroDocumento = isset($_POST['txtdoc']) ? trim($_POST['txtdoc']) : '';
@@ -187,16 +199,6 @@ if(isset($_POST['btningresar']) && $_SESSION['login_attempts'] < $max_attempts){
                     if ($ok) {
                         // Login exitoso - limpiar intentos fallidos
                         $_SESSION['login_attempts'] = 0;
-                // Política mínima de contraseña (coincide con register.php)
-                function password_meets_policy($pw) {
-                  if (!is_string($pw)) return false;
-                  if (strlen($pw) < 10) return false;
-                  if (!preg_match('/[A-Z]/', $pw)) return false;
-                  if (!preg_match('/[a-z]/', $pw)) return false;
-                  if (!preg_match('/[0-9]/', $pw)) return false;
-                    if (!preg_match('/[!@#\$%\^&\*\(\)_\+\-=\[\]{};:"\'|,.<>\/\?]/', $pw)) return false;
-                  return true;
-                }
 
                 // Si la contraseña no cumple la política, marcar para cambiar y redirigir
                 if (!password_meets_policy($clave)) {
@@ -245,12 +247,11 @@ if(isset($_POST['btningresar']) && $_SESSION['login_attempts'] < $max_attempts){
                 $_SESSION['display_name'] = implode(' ', $parts);
                 $_SESSION['id_rol'] = $row['id_rol'];
 
-                $base = '/enseñame/enSENAme/EnSENAme';
                 if($row['id_rol'] == 1){
-                  header("Location: " . $base . "/admin/dashboard/index.php");
+                  header("Location: admin/dashboard/index.php");
                   exit();
                 } else {
-                  header("Location: " . $base . "/user/index.php");
+                  header("Location: user/index.php");
                   exit();
                 }
                 } else {

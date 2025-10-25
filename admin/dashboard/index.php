@@ -135,6 +135,7 @@ if (empty($nombre)) {
               <span class="pc-mtext">Sistema IA</span>
             </a>
           </li>
+          
         </ul>
       </div>
     </div>
@@ -217,6 +218,11 @@ if (empty($nombre)) {
               <a href="../../IA/" class="btn btn-outline-secondary ms-2">
                 <i class="ti ti-folder me-2"></i>Ver Archivos IA
               </a>
+              <div class="mt-3">
+                <a href="../../IA/lsc_service/index_portable.html" target="_blank" class="btn btn-success me-2">
+                  <i class="ti ti-cpu me-2"></i>LSC Portable (Web)
+                </a>
+              </div>
             </div>
           </div>
         </div>
