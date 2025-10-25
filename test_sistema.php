@@ -18,36 +18,60 @@ foreach ($extensiones as $ext) {
 }
 
 echo "<h2>3. Test de Conexión a Base de Datos</h2>";
+// Intento multi-puerto: DB_PORT (si está definido), 3306 y 3307
+require_once __DIR__ . '/config.php';
 try {
-    $host = 'localhost';
-    $user = 'root';
-    $pass = '';
-    $db = 'kaboom';
-    
-    echo "<p>Intentando conectar a: $host | Usuario: $user | Base: $db</p>";
-    
-    $connection = @mysqli_connect($host, $user, $pass, $db);
-    
+    $host = defined('DB_HOST') ? DB_HOST : '127.0.0.1';
+    $user = defined('DB_USER') ? DB_USER : 'root';
+    $pass = defined('DB_PASS') ? DB_PASS : '';
+    $db   = defined('DB_NAME') ? DB_NAME : 'kaboom';
+    $ports = [];
+    if (defined('DB_PORT')) { $ports[] = (int)DB_PORT; }
+    $ports[] = 3306;
+    $ports[] = 3307;
+    $ports = array_values(array_unique(array_filter($ports, function($p){ return (int)$p > 0; })));
+
+    echo "<p>Intentando conectar a: <strong>$host</strong> | Usuario: <strong>$user</strong> | Base: <strong>$db</strong></p>";
+    echo "<p>Puertos a probar: <strong>" . implode(', ', $ports) . "</strong></p>";
+
+    $connection = null;
+    $usedPort = null;
+    $attempts = [];
+    foreach ($ports as $p) {
+        $tmp = @mysqli_connect($host, $user, $pass, $db, (int)$p);
+        if ($tmp) {
+            $connection = $tmp;
+            $usedPort = (int)$p;
+            $attempts[] = [ 'port' => $p, 'ok' => true, 'errno' => 0, 'error' => '' ];
+            break;
+        } else {
+            $attempts[] = [ 'port' => $p, 'ok' => false, 'errno' => mysqli_connect_errno(), 'error' => mysqli_connect_error() ];
+        }
+    }
+
     if ($connection) {
-        echo "<p>✅ <strong>Conexión exitosa</strong></p>";
-        
+        echo "<p>✅ <strong>Conexión exitosa</strong> en el puerto <strong>$usedPort</strong></p>";
         // Test de tabla usuarios
         $result = @mysqli_query($connection, "SELECT COUNT(*) as count FROM tb_usuarios");
         if ($result) {
             $row = mysqli_fetch_assoc($result);
-            echo "<p>✅ <strong>Tabla tb_usuarios:</strong> " . $row['count'] . " registros</p>";
+            echo "<p>✅ <strong>Tabla tb_usuarios:</strong> " . (int)$row['count'] . " registros</p>";
         } else {
-            echo "<p>⚠️ <strong>Tabla tb_usuarios:</strong> " . mysqli_error($connection) . "</p>";
+            echo "<p>⚠️ <strong>Consulta a tb_usuarios falló:</strong> " . htmlspecialchars(mysqli_error($connection)) . "</p>";
         }
-        
         mysqli_close($connection);
     } else {
-        echo "<p>❌ <strong>Error de conexión:</strong> " . mysqli_connect_error() . "</p>";
+        echo "<p>❌ <strong>Error de conexión:</strong> No se pudo conectar en ninguno de los puertos probados.</p>";
+        echo "<ul>";
+        foreach ($attempts as $a) {
+            echo "<li>Puerto <strong>" . (int)$a['port'] . "</strong>: " . ($a['ok'] ? 'OK' : ('Error (' . (int)$a['errno'] . '): ' . htmlspecialchars($a['error']))) . "</li>";
+        }
+        echo "</ul>";
         echo "<p><strong>Posibles soluciones:</strong></p>";
         echo "<ul>";
-        echo "<li>Verificar que MySQL esté ejecutándose en XAMPP</li>";
-        echo "<li>Verificar que la base de datos 'kaboom' exista</li>";
-        echo "<li>Verificar permisos de usuario</li>";
+        echo "<li>Inicie MySQL en XAMPP (Control Panel)</li>";
+        echo "<li>Verifique el puerto de MySQL (3306/3307) y ajuste DB_PORT en config.php</li>";
+        echo "<li>Confirme que la base de datos '<strong>$db</strong>' exista (phpMyAdmin) y que el usuario '<strong>$user</strong>' tenga permisos</li>";
         echo "</ul>";
     }
 } catch (Exception $e) {
