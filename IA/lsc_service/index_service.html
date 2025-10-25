@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EnSEÑAme - LSC Service (YOLO)</title>
+  <link rel="icon" href="../../admin/assets/images/favisena.png" type="image/x-icon" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link" />
+  <link rel="stylesheet" href="../../admin/assets/fonts/tabler-icons.min.css" />
+  <link rel="stylesheet" href="../../admin/assets/css/style.css" id="main-style-link" />
+  <link rel="stylesheet" href="../../admin/assets/css/style-preset.css" />
+  <style>
+    body { font-family: 'Public Sans', sans-serif; background:#f8f9fa; color:#333; }
+    .header { background:linear-gradient(135deg,#1890ff,#40a9ff); color:#fff; padding:1rem 0; box-shadow:0 2px 4px rgba(0,0,0,0.08); }
+    .container { max-width:1200px; margin:0 auto; padding:0 20px; }
+    .row { display:flex; align-items:center; justify-content:space-between; }
+    .logo { display:flex; align-items:center; gap:10px; }
+    .logo img { height:40px; }
+    .logo-text { font-size:1.3rem; font-weight:600; }
+    .back-btn { background:rgba(255,255,255,0.2); color:#fff; padding:8px 14px; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+    .back-btn:hover { background:rgba(255,255,255,0.3); }
+    .main { max-width:1200px; margin:24px auto; padding:0 20px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.04); overflow:hidden; }
+    .card-header { background:#f8fafc; border-bottom:1px solid #e5e7eb; padding:12px 16px; font-weight:600; color:#374151; }
+    .card-body { padding:16px; }
+    .controls { display:flex; flex-wrap:wrap; gap:10px; }
+    .btn { border:none; border-radius:8px; padding:8px 14px; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+    .btn-primary { background:#1890ff; color:#fff; }
+    .btn-secondary { background:#64748b; color:#fff; }
+    .btn-danger { background:#ef4444; color:#fff; }
+    .btn-warning { background:#f59e0b; color:#fff; }
+    .btn-success { background:#10b981; color:#fff; }
+    video { width:100%; background:#000; border-radius:8px; }
+    .status { display:grid; gap:10px; }
+    .badge { display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+    .badge.ok { background:#d1fae5; color:#065f46; }
+    .badge.warn { background:#fef3c7; color:#92400e; }
+    .badge.err { background:#fee2e2; color:#991b1b; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    @media (max-width: 900px) { .grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <div class="row">
+        <div class="logo">
+          <img src="../../admin/assets/images/logoensename.PNG" alt="EnSEÑAme" />
+          <span class="logo-text">LSC Service (YOLO)</span>
+        </div>
+        <a href="../../user/index.php" class="back-btn"><i class="ti ti-arrow-left"></i> Volver</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-body" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <span><i class="ti ti-info-circle"></i> Esta página usa el microservicio Flask en 127.0.0.1:5001 (o el que indiques con ?api=...) para reconocer LSC.</span>
+        <span id="healthBadge" class="badge warn">Chequeando servicio...</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-header"><i class="ti ti-video"></i> Cámara</div>
+        <div class="card-body">
+          <div class="controls" style="margin-bottom:10px;">
+            <button id="btnStartCam" class="btn btn-primary"><i class="ti ti-camera"></i> Iniciar cámara</button>
+            <button id="btnStopCam" class="btn btn-secondary"><i class="ti ti-player-stop"></i> Detener cámara</button>
+          </div>
+          <video id="video" autoplay playsinline muted></video>
+          <canvas id="canvas" style="display:none;"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><i class="ti ti-brain"></i> Reconocimiento</div>
+        <div class="card-body">
+          <div class="controls" style="margin-bottom:14px;">
+            <button id="btnOneShot" class="btn btn-success"><i class="ti ti-bolt"></i> Reconocer (1 captura)</button>
+            <button id="btnStreamStart" class="btn btn-warning"><i class="ti ti-player-play"></i> Iniciar reconocimiento continuo</button>
+            <button id="btnStreamStop" class="btn btn-danger"><i class="ti ti-player-pause"></i> Detener reconocimiento</button>
+          </div>
+          <div class="status">
+            <div><strong>Texto:</strong> <span id="texto" class="mono">—</span></div>
+            <div><strong>Clases:</strong> <span id="clases" class="mono">—</span></div>
+            <div><strong>Aviso:</strong> <span id="aviso" class="mono">—</span></div>
+            <div><strong>API:</strong> <span id="apiUrl" class="mono"></span></div>
+            <div><strong>Último error:</strong> <span id="lastErr" class="mono">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Config
+    const API_BASE = (new URLSearchParams(location.search).get('api') || 'http://127.0.0.1:5001').replace(/\/$/, '');
+    const HEALTH_URL = API_BASE + '/health';
+    const RECOG_URL = API_BASE + '/recognize';
+
+    const els = {
+      health: document.getElementById('healthBadge'),
+      apiUrl: document.getElementById('apiUrl'),
+      texto: document.getElementById('texto'),
+      clases: document.getElementById('clases'),
+      aviso: document.getElementById('aviso'),
+      lastErr: document.getElementById('lastErr'),
+      video: document.getElementById('video'),
+      canvas: document.getElementById('canvas'),
+      btnStartCam: document.getElementById('btnStartCam'),
+      btnStopCam: document.getElementById('btnStopCam'),
+      btnOneShot: document.getElementById('btnOneShot'),
+      btnStreamStart: document.getElementById('btnStreamStart'),
+      btnStreamStop: document.getElementById('btnStreamStop'),
+    };
+
+    els.apiUrl.textContent = API_BASE;
+
+    let mediaStream = null;
+    let streamTimer = null;
+
+    async function checkHealth() {
+      try {
+        els.health.textContent = 'Chequeando servicio...';
+        els.health.className = 'badge warn';
+        const res = await fetch(HEALTH_URL, { method: 'GET' });
+        const data = await res.json();
+        if (data && data.ok) {
+          els.health.textContent = `OK (YOLO: ${data.yolo ? 'sí' : 'no'}, MediaPipe: ${data.mediapipe ? 'sí' : 'no'})`;
+          els.health.className = 'badge ok';
+        } else {
+          els.health.textContent = 'Servicio responde, pero no ok';
+          els.health.className = 'badge warn';
+        }
+      } catch (e) {
+        els.health.textContent = 'Sin conexión a servicio';
+        els.health.className = 'badge err';
+        els.lastErr.textContent = String(e);
+      }
+    }
+
+    function getFrameDataURL() {
+      const v = els.video;
+      const c = els.canvas;
+      const w = v.videoWidth || 640;
+      const h = v.videoHeight || 480;
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(v, 0, 0, w, h);
+      return c.toDataURL('image/jpeg', 0.85);
+    }
+
+    async function recognizeOnce() {
+      try {
+        const dataUrl = getFrameDataURL();
+        const res = await fetch(RECOG_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: dataUrl })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Fallo de reconocimiento');
+        els.texto.textContent = data.texto || '—';
+        els.clases.textContent = (data.clases && data.clases.length) ? data.clases.join(', ') : '—';
+        els.aviso.textContent = data.aviso || '—';
+        els.lastErr.textContent = '—';
+      } catch (e) {
+        els.lastErr.textContent = String(e);
+      }
+    }
+
+    function startStreaming() { if (streamTimer) return; streamTimer = setInterval(recognizeOnce, 1200); }
+    function stopStreaming() { if (streamTimer) { clearInterval(streamTimer); streamTimer = null; } }
+
+    async function startCamera() {
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+        els.video.srcObject = mediaStream;
+        await els.video.play();
+      } catch (e) { els.lastErr.textContent = 'No se pudo iniciar la cámara: ' + String(e); }
+    }
+
+    function stopCamera() {
+      try { stopStreaming(); if (mediaStream) mediaStream.getTracks().forEach(t => t.stop()); els.video.srcObject = null; mediaStream = null; } catch {}
+    }
+
+    // Eventos UI
+    els.btnStartCam.addEventListener('click', startCamera);
+    els.btnStopCam.addEventListener('click', stopCamera);
+    els.btnOneShot.addEventListener('click', recognizeOnce);
+    els.btnStreamStart.addEventListener('click', startStreaming);
+    els.btnStreamStop.addEventListener('click', stopStreaming);
+
+    // Boot
+    checkHealth();
+    setInterval(checkHealth, 8000);
+  </script>
+
+  <script src="../../admin/assets/js/plugins/feather.min.js"></script>
+</body>
+</html>

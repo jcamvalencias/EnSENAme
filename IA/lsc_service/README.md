@@ -30,3 +30,30 @@ Versión de reconocimiento en el navegador usando TensorFlow.js + KNN con Mobile
 ## Enlaces relacionados
 
 - Página IA general: `IA/index.html` (incluye acceso a la versión portable).
+
+---
+
+## Opción avanzada: usar el modelo Python (.pt) con YOLO
+
+Si ya tienes un modelo entrenado en esta carpeta (por ejemplo `best.pt` o `lsc.pt`), puedes correr un microservicio local para usarlo desde el navegador.
+
+1) Requisitos
+- Python 3.10+ instalado (modo usuario).
+
+2) Iniciar el servicio
+- Abre PowerShell en `IA/lsc_service` y ejecuta:
+	```powershell
+	# por defecto autodetecta el .pt de la carpeta y usa el puerto 5001
+	.\run_yolo.ps1
+	# o especifica puerto/modelo
+	.\run_yolo.ps1 -Port 5050 -Model .\best.pt
+	```
+
+3) Probar en navegador
+- Abre la UI de servicio:  `IA/lsc_service/index_service.html`
+- URL directa (puerto por defecto):
+	`http://localhost/enseñame/enSENAme/EnSENAme/IA/lsc_service/index_service.html?api=http://127.0.0.1:5001`
+
+Notas
+- Archivos relevantes: `app_yolo.py`, `run_yolo.ps1`, `requirements.yolo.txt`.
+- La versión portable sigue funcionando en paralelo y no requiere Python.
