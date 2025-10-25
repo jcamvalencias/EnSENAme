@@ -169,11 +169,25 @@ rec = LSCRecognizer(PredictConfig())
 
 @app.get("/health")
 def health():
+    class_count = 0
+    trained = False
+    try:
+        if rec.model is not None and hasattr(rec.model, "names"):
+            names = rec.model.names
+            if isinstance(names, dict):
+                class_count = len(names)
+            elif isinstance(names, list):
+                class_count = len([n for n in names if n])
+            trained = class_count > 0
+    except Exception:
+        trained = False
     return jsonify({
         "ok": True,
         "yolo": bool(rec.model),
         "mediapipe": bool(rec.hands),
         "model_path": rec.cfg.model_path,
+        "trained": trained,
+        "class_count": class_count,
     })
 
 

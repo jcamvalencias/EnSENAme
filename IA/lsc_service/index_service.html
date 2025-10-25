@@ -88,6 +88,9 @@
             <div><strong>Clases:</strong> <span id="clases" class="mono">—</span></div>
             <div><strong>Aviso:</strong> <span id="aviso" class="mono">—</span></div>
             <div><strong>API:</strong> <span id="apiUrl" class="mono"></span></div>
+            <div><strong>Modelo:</strong> <span id="modelPath" class="mono">—</span></div>
+            <div><strong>Entrenado:</strong> <span id="trained" class="mono">—</span></div>
+            <div><strong>Clases totales:</strong> <span id="classCount" class="mono">—</span></div>
             <div><strong>Último error:</strong> <span id="lastErr" class="mono">—</span></div>
           </div>
         </div>
@@ -104,6 +107,9 @@
     const els = {
       health: document.getElementById('healthBadge'),
       apiUrl: document.getElementById('apiUrl'),
+  modelPath: document.getElementById('modelPath'),
+  trained: document.getElementById('trained'),
+  classCount: document.getElementById('classCount'),
       texto: document.getElementById('texto'),
       clases: document.getElementById('clases'),
       aviso: document.getElementById('aviso'),
@@ -129,8 +135,11 @@
         const res = await fetch(HEALTH_URL, { method: 'GET' });
         const data = await res.json();
         if (data && data.ok) {
-          els.health.textContent = `OK (YOLO: ${data.yolo ? 'sí' : 'no'}, MediaPipe: ${data.mediapipe ? 'sí' : 'no'})`;
+          els.health.textContent = `OK (YOLO: ${data.yolo ? 'sí' : 'no'}, Entrenado: ${data.trained ? 'sí' : 'no'}, Clases: ${typeof data.class_count === 'number' ? data.class_count : '—'})`;
           els.health.className = 'badge ok';
+          els.modelPath.textContent = data.model_path || '—';
+          els.trained.textContent = data.trained ? 'sí' : 'no';
+          els.classCount.textContent = (typeof data.class_count === 'number') ? String(data.class_count) : '—';
         } else {
           els.health.textContent = 'Servicio responde, pero no ok';
           els.health.className = 'badge warn';
@@ -139,6 +148,9 @@
         els.health.textContent = 'Sin conexión a servicio';
         els.health.className = 'badge err';
         els.lastErr.textContent = String(e);
+        els.modelPath.textContent = '—';
+        els.trained.textContent = '—';
+        els.classCount.textContent = '—';
       }
     }
 

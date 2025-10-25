@@ -44,9 +44,9 @@ Si ya tienes un modelo entrenado en esta carpeta (por ejemplo `best.pt` o `lsc.p
 - Abre PowerShell en `IA/lsc_service` y ejecuta:
 	```powershell
 	# por defecto autodetecta el .pt de la carpeta y usa el puerto 5001
-	.\run_yolo.ps1
+	.\run_yolo_easy.ps1
 	# o especifica puerto/modelo
-	.\run_yolo.ps1 -Port 5050 -Model .\best.pt
+	.\run_yolo_easy.ps1 -Port 5050 -Model .\best.pt
 	```
 
 3) Probar en navegador
@@ -56,4 +56,5 @@ Si ya tienes un modelo entrenado en esta carpeta (por ejemplo `best.pt` o `lsc.p
 
 Notas
 - Archivos relevantes: `app_yolo.py`, `run_yolo.ps1`, `requirements.yolo.txt`.
+- Para uso sin consola, puedes ejecutar con doble clic `run_yolo_easy.ps1`.
 - La versión portable sigue funcionando en paralelo y no requiere Python.
