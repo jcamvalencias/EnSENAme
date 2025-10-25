@@ -21,20 +21,34 @@ if (!$conexion) {
 
     $conexion = @mysqli_connect($host, $user, $pass, $db, $port);
 
+    // Auto-fallback: si falla por 2002, intenta 3307 (común en XAMPP)
+    if (!$conexion && mysqli_connect_errno() === 2002 && $port !== 3307) {
+        $fallbackPort = 3307;
+        $conexion = @mysqli_connect($host, $user, $pass, $db, $fallbackPort);
+        if ($conexion) {
+            // Nota: solo en modo debug informamos que usamos puerto alterno
+            if (defined('DEBUG_MODE') && DEBUG_MODE) {
+                error_log("[DB] Conectado usando puerto alterno $fallbackPort");
+            }
+        }
+    }
+
     if (!$conexion) {
         if (DEBUG_MODE) {
             $errno = mysqli_connect_errno();
             $err   = mysqli_connect_error();
             $hint = '';
             if ($errno === 2002) {
-                $hint = " | Hint: Verifique que el servicio MySQL/MariaDB esté INICIADO en XAMPP y que el puerto ($port) sea correcto. Si XAMPP usa 3307, cambie DB_PORT en config.php.";
+                $hint = " | Hint: Verifique que el servicio MySQL/MariaDB esté INICIADO en XAMPP y que el puerto ($port) sea correcto. Si XAMPP usa 3307, cambie DB_PORT en config.php (o ya se intentó fallback).";
             } elseif ($errno === 1045) {
                 $hint = " | Hint: Credenciales incorrectas (usuario/contraseña).";
             } elseif ($errno === 1049) {
                 $hint = " | Hint: La base de datos '$db' no existe.";
             }
+            http_response_code(500);
             die("Error de conexión ($errno): $err$hint");
         } else {
+            http_response_code(500);
             die("Error en la conexión a la base de datos. Contacte al administrador.");
         }
     }
