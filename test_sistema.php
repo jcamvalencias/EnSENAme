@@ -83,7 +83,8 @@ $archivos_importantes = [
     'config.php' => 'Configuración principal',
     'conexion.php' => 'Conexión a base de datos',
     'includes/session.php' => 'Manejo de sesiones',
-    'chatbot_api_simple.php' => 'API del chatbot (simple)',
+    // Endpoint actual del chatbot
+    'chatbot_api_clean.php' => 'API del chatbot (limpia)',
     'user/chatbot.php' => 'Interface usuario chatbot',
     'admin/dashboard/chat.php' => 'Interface admin chat'
 ];
