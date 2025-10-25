@@ -21,17 +21,21 @@ $is_local = (isset($_SERVER['HTTP_HOST']) &&
 // Configuración de base de datos
 if ($is_local) {
     // Configuración para desarrollo local
-    define('DB_HOST', 'localhost');
+    // Forzar TCP para evitar problemas de sockets en Windows
+    define('DB_HOST', '127.0.0.1');
     define('DB_USER', 'root');
     define('DB_PASS', '');
     define('DB_NAME', 'kaboom');
+    // Puerto típico de XAMPP (ajústalo si usas 3307 u otro)
+    define('DB_PORT', 3306);
     define('DEBUG_MODE', true);
 } else {
     // Configuración para producción (ajustar según el servidor)
-    define('DB_HOST', $_ENV['DB_HOST'] ?? 'localhost');
+    define('DB_HOST', $_ENV['DB_HOST'] ?? '127.0.0.1');
     define('DB_USER', $_ENV['DB_USER'] ?? 'username');
     define('DB_PASS', $_ENV['DB_PASS'] ?? 'password');
     define('DB_NAME', $_ENV['DB_NAME'] ?? 'database_name');
+    define('DB_PORT', (int)($_ENV['DB_PORT'] ?? 3306));
     define('DEBUG_MODE', false);
 }
 
